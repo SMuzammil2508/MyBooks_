@@ -13,5 +13,39 @@
         <li><%= listing.price %></li>
         <li><%= listing.location %></li>
     </ul>
+    <br>
+    <a href="/listings/<%= listing._id %>/edit">Edit</a>
+    <br>
+    <form method="post" action="/listings/<%=listing._id %>?_method=DELETE" >
+       <button>Delete</button>
+    </form>
+    
+<hr>
+    <h4>Leave a review</h4>
+    <form  action="/listings/<%= listing.id %>/reviews" method="POST" >
+        <div>
+            <lable for="rating">Rating</lable>
+            <input  type="range" min="1"  max="5" name="review[rating]" id="rating"/>
+        </div>
+        <div>
+             <lable for="commet">Rating</lable>
+            <textarea name="review[comment]" id="comment"></textarea>
+        </div>
+        <button>Submit</button>
+    </form>
+
+    <hr>
+    <h1>ALL Revirews</h1>
+    
+    <ul>
+        <% for(review of listing.reviews) { %>
+            <li><%= review.rating %>,<%= review.comment %></li>
+
+            
+            <form   method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" >
+                <button>Delete</button>
+            </form>
+        <% } %>
+    </ul>
 </body>
 </html>
