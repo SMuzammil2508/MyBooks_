@@ -3,6 +3,11 @@
 
  const path=require("path");
 
+
+ //added new line ---------------------------------------
+ app.use(express.static(path.join(__dirname, "public")));
+
+
  const mongoose = require("mongoose");
  const Listing = require("./models/listings.js");
 
