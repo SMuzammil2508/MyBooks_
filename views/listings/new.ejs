@@ -7,7 +7,21 @@
  </head>
  <body>
     <form method="post" action="/listings">
-       add inputs
+        
+          <input name="listing[title]" placeholder="Enter Title" type="text"/>
+          <br>
+          <label for="discreption">Description</label>
+          <textarea name="listing[discreption]" placeholder="Add discreption" type="text"></textarea> 
+          <br>
+          <input name="listing[image]" placeholder="Enter image URL" type="text">
+          <br>
+         <input name="listing[price]" placeholder="Enter Price" type="number" />
+          <br>
+          <input name="listing[bookAuthor]" placeholder="Enter Author Name" type="text" />
+          <br>
+          <input name="listing[location]" placeholder="Enter Location" type="text"/>
+          <br>
+          <button >ADD Your BOOK</button>
     </form>
  </body>
  </html>
