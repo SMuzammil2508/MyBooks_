@@ -1,104 +1,185 @@
- const sampleListing =[
-     {
-    title: "The Silent Observer",
-    discription: "A thought-provoking novel about solitude and human connection.",
-    image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f",
-    price: 299,
-    location: "Mumbai"
-  },
-  {
-    title: "Whispers of the Forest",
-    discription: "An illustrated guide to the hidden wonders of nature.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s", 
-    price: 499,
-    location: "Delhi"
-  },
-  {
-    title: "Architects of the Mind",
-    discription: "Exploring mental health through personal stories and science.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 399,
-    location: "Bangalore"
-  },
-  {
-    title: "Journey Beyond the Horizon",
-    discription: "Travel memoir capturing adventures across continents.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    location: "Kolkata"
-  },
-  {
-    title: "Coding for Humanity",
-    discription: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    image: "",
-    price: 199,
-    location: "Pune"
-  },
-    {
-    title: "Echoes of Eternity",
-    discription: "A fantasy epic exploring timeless myths and legends.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 450,
-    location: "Jaipur"
-  },
-  {
-    title: "Urban Dreams",
-    discription: "Stories of resilience and hope in bustling city life.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 320,
-    location: "Hyderabad"
-  },
-  {
-    title: "Mindful Pathways",
-    discription: "A guide to meditation and mental clarity.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 280,
-    location: "Chennai"
-  },
-  {
-    title: "The Hidden Library",
-    discription: "Mystery novel set in an ancient archive of secrets.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    location: "Lucknow"
-  },
-  {
-    title: "Songs of the River",
-    discription: "Poetic reflections inspired by flowing waters.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 210,
-    location: "Varanasi"
-  },
-  {
-    title: "Digital Horizons",
-    discription: "Exploring the future of technology and humanity.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 600,
-    location: "Gurgaon"
-  },
-  {
-    title: "Threads of Tradition",
-    discription: "A cultural journey through Indian textiles.",
-    image:"https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    location: "Ahmedabad"
-  },
-  {
-    title: "Voices of Tomorrow",
-    discription: "Youth perspectives on shaping a better world.",
-    image:"https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    price: 275,
-    location: "Bhopal"
-  },
-  {
-    title: "Sacred Geometry",
-    discription: "An illustrated exploration of patterns in nature and art.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    location: "Rishikesh"
-  },
-  {
-    title: "Beyond the Stars",
-    discription: "Science fiction tales of interstellar journeys.",
-    image: "https://unsplash.com/photos/a-copy-of-the-book-company-of-one-by-paul-jarviss-ViMrMawjj7s",
-    location: "Goa"
-  }
- ];
+const sampleListing = [
 
- module.exports = {data: sampleListing};
+  /* ================= FICTION (12 – GUARANTEED COVERS) ================= */
+  {
+    title: "The Alchemist",
+    description: "A philosophical novel by Paulo Coelho.",
+    price: 150,
+    location: "Mumbai",
+    category: "Fiction"
+  },
+  {
+    title: "1984",
+    description: "Dystopian political fiction by George Orwell.",
+    price: 160,
+    location: "Delhi",
+    category: "Fiction"
+  },
+  {
+    title: "Animal Farm",
+    description: "Political allegory novella.",
+    price: 140,
+    location: "Pune",
+    category: "Fiction"
+  },
+  {
+    title: "Harry Potter and the Philosopher's Stone",
+    description: "Fantasy novel by J.K. Rowling.",
+    price: 190,
+    location: "Mumbai",
+    category: "Fiction"
+  },
+  {
+    title: "The Hobbit",
+    description: "Fantasy adventure by J.R.R. Tolkien.",
+    price: 230,
+    location: "Nagpur",
+    category: "Fiction"
+  },
+  {
+    title: "Life of Pi",
+    description: "Adventure survival novel.",
+    price: 180,
+    location: "Goa",
+    category: "Fiction"
+  },
+  {
+    title: "The Book Thief",
+    description: "Historical fiction set in WWII.",
+    price: 220,
+    location: "Jaipur",
+    category: "Fiction"
+  },
+  {
+    title: "The Fault in Our Stars",
+    description: "Romantic drama novel.",
+    price: 170,
+    location: "Delhi",
+    category: "Fiction"
+  },
+  {
+    title: "The Great Gatsby",
+    description: "Classic American novel.",
+    price: 160,
+    location: "Mumbai",
+    category: "Fiction"
+  },
+  {
+    title: "To Kill a Mockingbird",
+    description: "Pulitzer Prize winning novel.",
+    price: 180,
+    location: "Pune",
+    category: "Fiction"
+  },
+  {
+    title: "Pride and Prejudice",
+    description: "Classic romance novel.",
+    price: 150,
+    location: "Delhi",
+    category: "Fiction"
+  },
+  {
+    title: "The Catcher in the Rye",
+    description: "Coming-of-age novel.",
+    price: 170,
+    location: "Mumbai",
+    category: "Fiction"
+  },
+
+  /* ================= NON-FICTION (7 – GUARANTEED) ================= */
+  {
+    title: "Sapiens",
+    description: "A brief history of humankind.",
+    price: 260,
+    location: "Mumbai",
+    category: "Non-Fiction"
+  },
+  {
+    title: "Atomic Habits",
+    description: "Build good habits, break bad ones.",
+    price: 220,
+    location: "Pune",
+    category: "Non-Fiction"
+  },
+  {
+    title: "Ikigai",
+    description: "Japanese philosophy for a long life.",
+    price: 180,
+    location: "Delhi",
+    category: "Non-Fiction"
+  },
+  {
+    title: "The Psychology of Money",
+    description: "Timeless lessons on wealth.",
+    price: 210,
+    location: "Mumbai",
+    category: "Non-Fiction"
+  },
+  {
+    title: "Man's Search for Meaning",
+    description: "Life philosophy by Viktor Frankl.",
+    price: 190,
+    location: "Pune",
+    category: "Non-Fiction"
+  },
+  {
+    title: "Educated",
+    description: "A memoir by Tara Westover.",
+    price: 230,
+    location: "Delhi",
+    category: "Non-Fiction"
+  },
+  {
+    title: "Becoming",
+    description: "Memoir of Michelle Obama.",
+    price: 240,
+    location: "Mumbai",
+    category: "Non-Fiction"
+  },
+
+  /* ================= SELF-HELP (6 – GUARANTEED) ================= */
+  {
+    title: "Rich Dad Poor Dad",
+    description: "Personal finance classic.",
+    price: 190,
+    location: "Delhi",
+    category: "Self-Help"
+  },
+  {
+    title: "The 5 AM Club",
+    description: "Morning routine for success.",
+    price: 210,
+    location: "Mumbai",
+    category: "Self-Help"
+  },
+  {
+    title: "How to Win Friends and Influence People",
+    description: "Communication skills guide.",
+    price: 170,
+    location: "Pune",
+    category: "Self-Help"
+  },
+  {
+    title: "Deep Work",
+    description: "Rules for focused success.",
+    price: 220,
+    location: "Delhi",
+    category: "Self-Help"
+  },
+  {
+    title: "Think and Grow Rich",
+    description: "Success mindset book.",
+    price: 180,
+    location: "Mumbai",
+    category: "Self-Help"
+  },
+  {
+    title: "The Power of Now",
+    description: "Spiritual self-help book.",
+    price: 200,
+    location: "Rishikesh",
+    category: "Self-Help"
+  }
+];
+
+module.exports = { data: sampleListing };

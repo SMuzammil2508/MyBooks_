@@ -1,23 +1,204 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- </head>
- <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyBooks | Library</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-   <h1>All Listings</h1>
+  <header class="site-header">
+    <h1><i class="fas fa-book-open"></i> MyBooks</h1>
+    <nav>
+      <a href="/listings">Explore</a>
+      <a href="/listings/new" class="cta-button">
+        <i class="fas fa-plus"></i> Sell Book
+      </a>
+    </nav>
+  </header>
+
+  <div class="hero-section">
+    <h1 class="hero-title">Find Your Next Chapter</h1>
+    <p class="hero-sub">
+      Buy and sell used books within your campus. 
+      Save money, save trees, and read more.
+    </p>
     
-   <ul>
-    <% for(let listing of allListings){ %>
-     <li> <a href="/listings/<%= listing._id %>"> <%= listing.title %></a> </li>
-    <% } %>
-   </ul>
-    
-    
-    <form method="GET" action="/listings/new" >
-        <button>ADD Books</button>
-    </form>
- </body>
- </html>
+    <div class="hero-search">
+      <input type="text" placeholder="Search for 'Physics', 'Novels'..." />
+      <button><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+
+  <main>
+
+    <% if(allListings.length === 0) { %>
+      <section class="section">
+        <div class="empty-state">
+          <h2>No Books Available Yet</h2>
+          <p>Be the first to list a book and save the planet!</p>
+          <br>
+          <a href="/listings/new" class="cta-button">Add a Book Now</a>
+        </div>
+      </section>
+    <% } else { %>
+
+      <section class="section" style="padding-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <h2 class="section-title">📍 Books Near You</h2>
+            <a href="javascript:void(0)" onclick="toggleNearBooks()" id="view-all-btn" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; cursor: pointer;">
+                View All &rarr;
+            </a>
+        </div>
+        
+        <div id="near-books-container" class="horizontal-scroll">
+          <% allListings.reverse().forEach(listing => { %>
+            <div class="listing-card small">
+              <div class="book-image">
+                <img src="<%= listing.image %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"/>
+              </div>
+              <h3>
+                <a href="/listings/<%= listing._id %>">
+                  <%= listing.title.length > 20 ? listing.title.substring(0, 20) + '...' : listing.title %>
+                </a>
+              </h3>
+              <div class="card-bottom-row">
+                 <div class="price"><%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %></div>
+                 <small style="color: var(--text-muted);"><%= listing.location || 'India' %></small>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+
+      <section class="section soft-bg" style="margin-top: 40px; border-bottom: none;">
+        <h2 class="section-title">Browse by Category</h2>
+        <div class="category-grid">
+          <button class="category-pill active" onclick="filterBooks('all', this)">All Books</button>
+          <button class="category-pill" onclick="filterBooks('iit', this)">IIT-JEE</button>
+          <button class="category-pill" onclick="filterBooks('neet', this)">NEET</button>
+          <button class="category-pill" onclick="filterBooks('fiction', this)">Fiction</button>
+          <button class="category-pill" onclick="filterBooks('self-help', this)">Self-Help</button>
+          <button class="category-pill" onclick="filterBooks('non-fiction', this)">Non-Fiction</button>
+        </div>
+      </section>
+
+      <section class="section" style="min-height: 500px;">
+        
+        <div id="cat-all" class="category-section active-content">
+            <h3 class="section-sub">Showing all available books</h3>
+            <div class="listings-container">
+                <% allListings.forEach(listing => { %>
+                    <%- include('_card_partial', {listing: listing}) %> 
+                <% }) %>
+            </div>
+        </div>
+
+        <div id="cat-iit" class="category-section">
+            <h3 class="section-sub">Top materials for IIT-JEE aspirants</h3>
+            <div class="listings-container">
+                <% const iitBooks = allListings.filter(b => b.category === 'IIT-JEE'); %>
+                <% if(iitBooks.length > 0) { %>
+                    <% iitBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
+                <% } else { %>
+                    <div class="empty-state">No IIT-JEE books found.</div>
+                <% } %>
+            </div>
+        </div>
+
+        <div id="cat-neet" class="category-section">
+            <h3 class="section-sub">Best biology and medical prep books</h3>
+            <div class="listings-container">
+                <% const neetBooks = allListings.filter(b => b.category === 'NEET'); %>
+                <% if(neetBooks.length > 0) { %>
+                    <% neetBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
+                <% } else { %>
+                    <div class="empty-state">No NEET books found.</div>
+                <% } %>
+            </div>
+        </div>
+
+        <div id="cat-fiction" class="category-section">
+            <h3 class="section-sub">Escape into new worlds</h3>
+            <div class="listings-container">
+                <% const fictionBooks = allListings.filter(b => b.category === 'Fiction'); %>
+                <% if(fictionBooks.length > 0) { %>
+                    <% fictionBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
+                <% } else { %>
+                    <div class="empty-state">No Fiction books found.</div>
+                <% } %>
+            </div>
+        </div>
+
+        <div id="cat-self-help" class="category-section">
+            <h3 class="section-sub">Books for personal growth</h3>
+            <div class="listings-container">
+                <% const shBooks = allListings.filter(b => b.category === 'Self-Help'); %>
+                <% if(shBooks.length > 0) { %>
+                    <% shBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
+                <% } else { %>
+                    <div class="empty-state">No Self-Help books found.</div>
+                <% } %>
+            </div>
+        </div>
+
+        <div id="cat-non-fiction" class="category-section">
+            <h3 class="section-sub">Real stories and facts</h3>
+            <div class="listings-container">
+                <% const nfBooks = allListings.filter(b => b.category === 'Non-Fiction'); %>
+                <% if(nfBooks.length > 0) { %>
+                    <% nfBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
+                <% } else { %>
+                    <div class="empty-state">No Non-Fiction books found.</div>
+                <% } %>
+            </div>
+        </div>
+
+      </section>
+
+    <% } %> </main>
+
+  <footer class="site-footer">
+    <p>Made with ❤️ for Hackathon 2026</p>
+  </footer>
+
+  <script>
+    /* 1. Expand "Books Near You" */
+    function toggleNearBooks() {
+      const container = document.getElementById('near-books-container');
+      const btn = document.getElementById('view-all-btn');
+      if (container.classList.contains('horizontal-scroll')) {
+        container.classList.remove('horizontal-scroll');
+        container.classList.add('listings-container');
+        btn.innerHTML = "Show Less &uarr;";
+      } else {
+        container.classList.remove('listings-container');
+        container.classList.add('horizontal-scroll');
+        btn.innerHTML = "View All &rarr;";
+      }
+    }
+
+    /* 2. Filter Categories */
+    function filterBooks(category, btnElement) {
+        // A. Hide all sections
+        const sections = document.querySelectorAll('.category-section');
+        sections.forEach(sec => sec.classList.remove('active-content'));
+
+        // B. Show target section
+        const targetId = 'cat-' + category;
+        const targetSection = document.getElementById(targetId);
+        if(targetSection) {
+            targetSection.classList.add('active-content');
+        }
+
+        // C. Update Buttons Highlight
+        const buttons = document.querySelectorAll('.category-pill');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
