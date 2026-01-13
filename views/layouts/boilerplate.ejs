@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>MyBooks</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    </head>
+
+<body>
+
+    <header class="site-header">
+        <h1><i class="fas fa-book-open"></i> MyBooks</h1>
+        <nav>
+            <a href="/listings">Explore</a>
+            <a href="/listings/new" class="cta-button">
+                <i class="fas fa-plus"></i> Sell Book
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <%- body %>
+    </main>
+
+    <footer class="site-footer" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+        <p>Made with ❤️ for Hackathon 2026</p>
+    </footer>
+
+    <script src="/js/script.js"></script>
+
+</body>
+</html>

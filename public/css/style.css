@@ -39,8 +39,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  
+  /* ⭐ THE FIX: Prevents horizontal scrolling/wobble ⭐ */
+  overflow-x: hidden;
+  width: 100%;
 }
-
 main {
   flex: 1; /* This pushes the footer to the bottom if content is short */
 }
@@ -52,16 +55,29 @@ a {
 
 /* ================= HEADER ================= */
 .site-header {
-  padding: 16px 5%;
+  /* ⭐ 1. LAYOUT LOCKS */
+  width: 100%;
+  max-width: 100%; /* Prevents it from getting wider than the screen */
+  height: 70px;    /* Fixed height prevents jumping */
+  
+  /* ⭐ 2. POSITIONING */
+  position: sticky;
+  top: 0;
+  left: 0;         /* Anchors it to the left side */
+  z-index: 1000;
+  
+  /* ⭐ 3. STYLING */
+  padding: 0 5%;   /* Changed padding to 0 top/bottom, handled by Flex alignment */
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--bg-surface);
   border-bottom: 3px solid var(--primary);
-  position: sticky;
-  top: 0;
-  z-index: 100;
   box-shadow: var(--shadow-sm);
+  
+  /* ⭐ 4. CRITICAL FIX */
+  box-sizing: border-box; /* Ensures padding is included in width */
+  margin: 0;
 }
 
 .site-header h1 {
@@ -1046,4 +1062,539 @@ a {
 
 .read-more-btn:hover {
     text-decoration: underline;
+}
+
+
+
+/* Navbar Transition */
+.site-header {
+    transition: all 0.3s ease;
+}
+/* ✅ NEW (Keeps it stable) */
+.site-header.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    /* We keep the 5% on the sides so it doesn't move horizontally */
+    padding: 10px 5%; 
+}
+
+/* Scroll Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Typing Cursor (Optional cool effect) */
+#typing-text::after {
+    content: "|";
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+
+
+/* ============================================================
+   LANDING PAGE STYLES (Adapted to your Theme)
+   ============================================================ */
+
+/* --- 1. HERO SECTION --- */
+.hero {
+    /* Gradient adapted: Paper to Soft Beige */
+    background: linear-gradient(135deg, var(--bg-paper) 0%, #e6dfc8 100%);
+    padding: 80px 20px;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Split Layout Logic */
+@media (min-width: 900px) {
+    .split-layout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 60px;
+    }
+    .hero-content {
+        flex: 1;
+        max-width: 600px;
+        text-align: left;
+    }
+    .hero-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+    .hero-buttons {
+        justify-content: flex-start;
+    }
+    .hero-stats {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 899px) {
+    .split-layout {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 40px;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .hero-stats {
+        justify-content: center;
+    }
+    .hero h1 {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* Hero Typography */
+.hero h1 {
+    font-size: 3.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.hero h1 span#typing-text {
+    /* Gradient text effect using your Accent colors */
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-right: 3px solid var(--accent); /* Cursor color */
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 35px;
+    max-width: 600px;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    border: 4px solid var(--bg-surface);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Hero Stats */
+.hero-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(78, 52, 46, 0.1);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item strong {
+    font-size: 2rem;
+    color: var(--primary);
+    line-height: 1;
+    font-weight: 800;
+}
+
+.stat-item span {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.stat-separator {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+}
+
+/* --- Hero Buttons --- */
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: 2px solid var(--primary);
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--text-main);
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: 2px solid var(--text-main);
+    transition: var(--transition);
+}
+
+.btn-outline:hover {
+    background-color: var(--text-main);
+    color: var(--bg-paper);
+    transform: translateY(-3px);
+}
+
+/* --- 2. CAROUSEL SECTION --- */
+.carousel-section {
+    padding: 60px 0;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.carousel-section h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.carousel {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    /* Fade effect matching the paper background */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.carousel-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    padding: 10px 0;
+}
+
+.book-card {
+    background: var(--bg-paper);
+    border: 1px solid var(--border);
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- 3. HOW IT WORKS (Steps) --- */
+.how-it-works {
+    padding: 100px 20px;
+    background: var(--bg-paper);
+    text-align: center;
+}
+
+.how-it-works h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 60px;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.step-card {
+    background: var(--bg-surface);
+    padding: 40px 30px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    z-index: 1;
+}
+
+.step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+}
+
+.step-icon {
+    width: 70px;
+    height: 70px;
+    background: var(--bg-paper);
+    color: var(--accent); /* Using Ochre for icons */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 25px auto;
+    transition: transform 0.3s;
+    border: 1px solid var(--border);
+}
+
+.step-card:hover .step-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--accent);
+    color: white;
+}
+
+.step-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.step-card p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* --- 4. TESTIMONIALS --- */
+.testimonials {
+    padding: 100px 20px;
+    background: var(--bg-soft); /* Darker beige */
+}
+
+.testimonials h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 60px;
+}
+
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial {
+    background: var(--bg-surface);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.testimonial p {
+    font-size: 1.1rem;
+    color: var(--text-main);
+    font-style: italic;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.user-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--bg-paper);
+    box-shadow: var(--shadow-sm);
+}
+
+.user-profile strong {
+    display: block;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.user-profile span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- 5. FAQ SECTION --- */
+.faq {
+    padding: 100px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--bg-paper);
+}
+
+.faq h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 50px;
+}
+
+details {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+details[open] {
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
+}
+
+summary {
+    padding: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    background: var(--bg-surface);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-main);
+}
+
+summary:hover {
+    background: var(--bg-paper);
+}
+
+summary::after {
+    content: '\f078'; /* FontAwesome Chevron */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1rem;
+    color: var(--accent);
+    transition: transform 0.3s;
+}
+
+details[open] summary::after {
+    transform: rotate(180deg);
+}
+
+details p {
+    padding: 0 25px 25px 25px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-top: none;
+}
+
+/* --- 6. CTA SECTION --- */
+.cta-section {
+    padding: 80px 20px;
+    background: var(--primary); /* Using your Burgundy */
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+
+.cta-container {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.cta-section h2 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.cta-section p {
+    color: rgba(255,255,255,0.8);
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+/* Override btn-primary inside CTA to look distinct (White button) */
+.cta-section .btn-primary {
+    background: var(--bg-paper);
+    color: var(--primary);
+    border-color: var(--bg-paper);
+}
+
+.cta-section .btn-primary:hover {
+    background: white;
+    color: var(--primary-hover);
+    transform: translateY(-3px);
 }
