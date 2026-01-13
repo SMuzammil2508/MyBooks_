@@ -24,10 +24,9 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Review = require("./review.js"); // ✅ Added Review model import
+const Review = require("./review.js"); 
 
-const DEFAULT_IMAGE =
-  "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f";
 
 const listingSchema = new Schema(
   {
@@ -37,29 +36,9 @@ const listingSchema = new Schema(
       trim: true
     },
 
-    author: {
-      type: String,
-      trim: true
-    },
-
     description: {
       type: String,
       trim: true
-    },
-
-    category: {
-      type: String,
-      enum: [
-        "Fiction",
-        "Non-Fiction",
-        "Self-Help",
-        "IIT-JEE",
-        "NEET",
-        "Engineering",
-        "Academic",
-        "Other"
-      ],
-      default: "Other"
     },
 
     image: {
@@ -77,15 +56,52 @@ const listingSchema = new Schema(
 
     price: {
       type: Number,
-      min: 0
+      min: 0,
+      required: true
+    },
+
+    // ✅ NEW: Required for the "50% OFF" badge logic
+    mrp: {
+      type: Number,
+      min: 0,
+      required: true
     },
 
     location: {
       type: String,
-      trim: true
+      trim: true,
+      required: true
     },
 
-    // ✅ Added Reviews Array
+    author: {
+      type: String,
+      trim: true
+    },
+    
+    // 📧 NEW: Temporary Email field (Until we add Authentication)
+    // This connects the Buyer to the Seller
+    email: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    category: {
+      type: String,
+      enum: [
+        "Fiction",
+        "Non-Fiction",
+        "Self-Help",
+        "IIT-JEE",
+        "NEET",
+        "Engineering",
+        "Academic",
+        "Other"
+      ],
+      default: "Other"
+    },
+
+    // Relation to Reviews
     reviews: [
       {
         type: Schema.Types.ObjectId,
@@ -99,7 +115,7 @@ const listingSchema = new Schema(
 // 🚀 Speeds up category filtering
 listingSchema.index({ category: 1 });
 
-// ✅ Added Middleware: Deletes all reviews if a Listing is deleted
+// Middleware: Deletes all reviews if a Listing is deleted
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
     await Review.deleteMany({ _id: { $in: listing.reviews } });

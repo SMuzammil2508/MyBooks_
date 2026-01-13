@@ -1,30 +1,136 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- </head>
- <body>
+    <title>Edit: <%= listing.title %> | MyBooks</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-    <form method="POST"  action="/listings/<%= listing._id %>?_method=PUT"   >
-      <input name="listing[title]" value="<%= listing.title %>" type="text"/>
-          <br>
-          <label for="discreption">Description</label>
-          <textarea name="listing[discreption]"  type="text"></textarea> 
-          <br>
-          <input name="listing[image]" value="<%= listing.image %>" type="text">
-          <br>
-         <input name="listing[price]" value="<%= listing.price %>" type="number" />
-          <br>
-          <input name="listing[bookAuthor]" value="<%= listing.bookAuthor %>" type="text" />
-          <br>
-          <input name="listing[location]" value="<%= listing.location %>" type="text"/>
-          <br>
-          
-        <button >Edit</button>
-    </form>
+    <header class="site-header">
+        <h1><i class="fas fa-book-open"></i> MyBooks</h1>
+        <nav><a href="/listings/<%= listing._id %>">Cancel Edit</a></nav>
+    </header>
 
-    
- </body>
- </html>
+    <main class="add-book-container">
+        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="add-book-wrapper needs-validation" novalidate>
+            
+            <div class="image-upload-section">
+                <div class="cover-preview preview-active" id="preview-box">
+                    <img 
+                        id="preview-img" 
+                        src="<%= listing.image %>" 
+                        style="display: block;" 
+                        onerror="this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
+                    />
+                </div>
+                
+                <label style="margin-top: 15px; display: block; font-weight: 600;">Cover Image URL</label>
+                <input 
+                    type="text" 
+                    name="listing[image]" 
+                    id="image-url-input" 
+                    class="form-control" 
+                    value="<%= listing.image %>"
+                    oninput="updatePreview(this.value)"
+                >
+            </div>
+
+            <div class="form-section">
+                <h2>Edit Details</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Book Title <span style="color: red;">*</span></label>
+                        <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input name="listing[author]" value="<%= listing.author %>" type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category <span style="color: red;">*</span></label>
+                        <select name="listing[category]" class="form-control" required>
+                            <option value="IIT-JEE" <%= listing.category === 'IIT-JEE' ? 'selected' : '' %>>IIT-JEE</option>
+                            <option value="NEET" <%= listing.category === 'NEET' ? 'selected' : '' %>>NEET</option>
+                            <option value="Engineering" <%= listing.category === 'Engineering' ? 'selected' : '' %>>Engineering</option>
+                            <option value="Fiction" <%= listing.category === 'Fiction' ? 'selected' : '' %>>Fiction</option>
+                            <option value="Non-Fiction" <%= listing.category === 'Non-Fiction' ? 'selected' : '' %>>Non-Fiction</option>
+                            <option value="Self-Help" <%= listing.category === 'Self-Help' ? 'selected' : '' %>>Self-Help</option>
+                            <option value="Other" <%= listing.category === 'Other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location <span style="color: red;">*</span></label>
+                        <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Email <span style="color: red;">*</span></label>
+                    <input name="listing[email]" value="<%= listing.email %>" type="email" class="form-control" required />
+                    <small style="color: #64748b;">Buyers will email you here.</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>MRP (₹) <span style="color: red;">*</span></label>
+                        <input name="listing[mrp]" id="mrp" value="<%= listing.mrp %>" type="number" class="form-control" required oninput="validatePrice()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Selling Price (₹) <span style="color: red;">*</span></label>
+                        <input name="listing[price]" id="price" value="<%= listing.price %>" type="number" class="form-control" required oninput="validatePrice()" />
+                        <small id="price-warning" style="color: #ef4444; display: none;">Selling price cannot be higher than MRP!</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="listing[description]" rows="5" class="form-control"><%= listing.description %></textarea>
+                </div>
+
+                <div class="action-btns" style="margin-top: 20px; border: none; padding: 0;">
+                    <button class="cta-button" id="submit-btn" style="width: 100%;">Update Listing</button>
+                </div>
+
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // 1. Update Image Preview
+        function updatePreview(url) {
+            const img = document.getElementById('preview-img');
+            if (url) {
+                img.src = url;
+            }
+        }
+
+        // 2. Validate Price
+        function validatePrice() {
+            const mrp = parseFloat(document.getElementById('mrp').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const warning = document.getElementById('price-warning');
+            const btn = document.getElementById('submit-btn');
+
+            if (price > mrp && mrp > 0) {
+                warning.style.display = 'block';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            } else {
+                warning.style.display = 'none';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+        }
+    </script>
+
+</body>
+</html>

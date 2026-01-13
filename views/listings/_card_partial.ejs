@@ -1,28 +1,29 @@
-<div class="listing-card">
+<a href="/listings/<%= listing._id %>" class="listing-card">
+
   <div class="book-image">
     <img 
       src="<%= listing.image %>" 
       alt="<%= listing.title %>"
+      style="height: 100%; width: 100%; object-fit: cover;"
       onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
     />
   </div>
 
   <h2>
-    <a href="/listings/<%= listing._id %>">
-      <%= listing.title.length > 40 ? listing.title.substring(0, 40) + '...' : listing.title %>
-    </a>
+    <%= listing.title.length > 45 ? listing.title.substring(0, 45) + '...' : listing.title %>
   </h2>
 
   <p class="desc">
-    <%= listing.description ? listing.description.substring(0, 80) + '...' : 'No description available.' %>
+    <%= listing.description || "No description available for this book." %>
   </p>
 
   <div class="card-bottom-row">
     <div class="price">
         <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
     </div>
-    <div style="font-size: 0.85rem; color: #777;">
+    <div style="font-size: 0.85rem; color: #777; display: flex; align-items: center; gap: 4px;">
         <i class="fas fa-map-marker-alt"></i> <%= listing.location || 'India' %>
     </div>
   </div>
-</div>
+
+</a>

@@ -1,27 +1,299 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- </head>
- <body>
-    <form method="post" action="/listings">
+    <title>Sell a Book | MyBooks</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <h1><i class="fas fa-book-open"></i> MyBooks</h1>
+        <nav><a href="/listings">Cancel</a></nav>
+    </header>
+
+    <main class="add-book-container">
         
-          <input name="listing[title]" placeholder="Enter Title" type="text"/>
-          <br>
-          <label for="discreption">Description</label>
-          <textarea name="listing[discreption]" placeholder="Add discreption" type="text"></textarea> 
-          <br>
-          <input name="listing[image]" placeholder="Enter image URL" type="text">
-          <br>
-         <input name="listing[price]" placeholder="Enter Price" type="number" />
-          <br>
-          <input name="listing[bookAuthor]" placeholder="Enter Author Name" type="text" />
-          <br>
-          <input name="listing[location]" placeholder="Enter Location" type="text"/>
-          <br>
-          <button >ADD Your BOOK</button>
-    </form>
- </body>
- </html>
+        <form method="post" action="/listings" class="add-book-wrapper needs-validation" id="sellForm" novalidate>
+            
+            <div class="image-upload-section">
+                
+                <div class="cover-preview" id="preview-box">
+                    <div id="placeholder-content">
+                        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                        <p style="font-size: 0.9rem; opacity: 0.6;">Cover Preview</p>
+                    </div>
+                    <img id="preview-img" src="" style="display: none;" />
+                </div>
+
+                <div class="cover-btns">
+                    <p style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">Image URL</p>
+                    <input 
+                        type="text" 
+                        name="listing[image]" 
+                        id="image-url-input" 
+                        class="form-control" 
+                        placeholder="https://..."
+                        oninput="updatePreview(this.value)"
+                    >
+                </div>
+            </div>
+
+            <div class="form-section">
+                
+                <div style="background: #f0fdf4; border: 1px dashed #16a34a; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                    <label style="color: #15803d; font-weight: 700; display: block; margin-bottom: 8px;">
+                        ✨ Fast Fill via ISBN
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input 
+                            type="text" 
+                            id="isbn-input" 
+                            class="form-control" 
+                            placeholder="Enter 13-digit ISBN (Back of book)" 
+                            style="margin-bottom: 0;"
+                        >
+                        <button type="button" onclick="fetchByISBN()" class="cta-button" id="isbn-btn" style="white-space: nowrap; background: #16a34a; border-color: #16a34a;">
+                            <i class="fas fa-magic"></i> Fetch
+                        </button>
+                    </div>
+                </div>
+
+                <h2>Book Details</h2>
+
+                <div class="form-row">
+                    
+                    <div class="form-group" style="flex: 2;">
+                        <label>Book Title <span style="color: red;">*</span></label>
+                        <input name="listing[title]" id="title" placeholder="e.g. Concepts of Physics" type="text" class="form-control" required />
+                        
+                        <button type="button" onclick="fetchByTitle()" id="title-btn" style="margin-top: 8px; background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; font-size: 0.9rem; padding: 0; display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-search"></i> Auto-Fill using Title
+                        </button>
+
+                        <div class="invalid-feedback">Please enter a title.</div>
+                    </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label>Author</label>
+                        <input name="listing[author]" id="author" placeholder="e.g. H.C. Verma" type="text" class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category <span style="color: red;">*</span></label>
+                        <select name="listing[category]" id="category" class="form-control" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="IIT-JEE">IIT-JEE</option>
+                            <option value="NEET">NEET</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Self-Help">Self-Help</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a category.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Location <span style="color: red;">*</span></label>
+                        <input name="listing[location]" placeholder="e.g. Hostel 4, Mumbai" type="text" class="form-control" required />
+                        <div class="invalid-feedback">Please enter your location.</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Email <span style="color: red;">*</span></label>
+                    <div class="input-group" style="display: flex;">
+                        <span style="display: flex; align-items: center; padding: 0 15px; background: #f1f5f9; border: 1px solid #cbd5e1; border-right: 0; border-radius: 8px 0 0 8px;">
+                            <i class="fas fa-envelope" style="color: #64748b;"></i>
+                        </span>
+                        <input 
+                            name="listing[email]" 
+                            type="email" 
+                            class="form-control" 
+                            placeholder="For buyers to contact you" 
+                            required 
+                            style="border-radius: 0 8px 8px 0;"
+                        />
+                    </div>
+                    <div class="invalid-feedback">Please provide a valid email address.</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Original MRP (₹) <span style="color: red;">*</span></label>
+                        <input name="listing[mrp]" id="mrp" placeholder="500" type="number" class="form-control" required oninput="validatePrice()" />
+                        <div class="invalid-feedback">Please enter the MRP.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Selling Price (₹) <span style="color: red;">*</span></label>
+                        <input name="listing[price]" id="price" placeholder="250" type="number" class="form-control" required oninput="validatePrice()" />
+                        <small id="price-warning" style="color: #ef4444; display: none;">Selling price cannot be higher than MRP!</small>
+                        <div class="invalid-feedback">Please enter a selling price.</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea 
+                        name="listing[description]" 
+                        id="description" 
+                        rows="5" 
+                        class="form-control" 
+                        placeholder="Describe the book condition (e.g., 'Like new', 'Some highlighter marks')..."
+                    ></textarea>
+                </div>
+
+                <button class="cta-button" id="submit-btn" style="width: 100%; margin-top: 10px;">Post Listing</button>
+
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // 1. Validation Logic
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false)
+            })
+        })();
+
+        // 2. Image Preview Logic
+        function updatePreview(url) {
+            const previewImg = document.getElementById('preview-img');
+            const placeholder = document.getElementById('placeholder-content');
+            
+            if (url) {
+                previewImg.src = url;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+        }
+
+        // 3. Price Validation
+        function validatePrice() {
+            const mrp = parseFloat(document.getElementById('mrp').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const warning = document.getElementById('price-warning');
+            const btn = document.getElementById('submit-btn');
+            const priceInput = document.getElementById('price');
+
+            if (price > mrp && mrp > 0) {
+                warning.style.display = 'block';
+                priceInput.setCustomValidity("Price cannot be higher than MRP");
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            } else {
+                warning.style.display = 'none';
+                priceInput.setCustomValidity(""); 
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        }
+
+        // 4. FETCH BY ISBN
+        async function fetchByISBN() {
+            const isbn = document.getElementById('isbn-input').value.trim();
+            const btn = document.getElementById('isbn-btn');
+
+            if (!isbn) { alert("Please enter an ISBN."); return; }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+                const data = await res.json();
+                handleBookData(data);
+            } catch (err) {
+                console.error(err);
+                alert("Error fetching details.");
+            } finally {
+                btn.innerHTML = '<i class="fas fa-magic"></i> Fetch';
+                btn.disabled = false;
+            }
+        }
+
+        // 5. FETCH BY TITLE
+        async function fetchByTitle() {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const btn = document.getElementById('title-btn');
+            
+            if (!title) { 
+                alert("Please enter a Title first!"); 
+                document.getElementById('title').focus();
+                return; 
+            }
+            
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+            btn.disabled = true;
+
+            try {
+                let query = `intitle:${title}`;
+                if(author) query += `+inauthor:${author}`;
+
+                const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`);
+                const data = await res.json();
+                handleBookData(data);
+            } catch (err) {
+                console.error(err);
+                alert("Error fetching details.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // 6. SHARED DATA HANDLER
+        function handleBookData(data) {
+            if (data.items && data.items.length > 0) {
+                const info = data.items[0].volumeInfo;
+
+                document.getElementById('title').value = info.title || document.getElementById('title').value;
+                if (info.authors) document.getElementById('author').value = info.authors[0];
+                if (info.description) document.getElementById('description').value = info.description;
+
+                if (info.imageLinks) {
+                    let imgUrl = info.imageLinks.thumbnail || info.imageLinks.smallThumbnail;
+                    imgUrl = imgUrl.replace('http:', 'https:').replace('&edge=curl', '');
+                    document.getElementById('image-url-input').value = imgUrl;
+                    updatePreview(imgUrl);
+                } else {
+                    alert("Book details found, but no image available. Please paste one manually.");
+                }
+
+                if (info.categories) {
+                    const cat = info.categories[0].toLowerCase();
+                    const catSelect = document.getElementById('category');
+                    
+                    if (cat.includes('fiction') && !cat.includes('non')) catSelect.value = "Fiction";
+                    else if (cat.includes('technology') || cat.includes('engineering') || cat.includes('computer')) catSelect.value = "Engineering";
+                    else if (cat.includes('medical') || cat.includes('biology')) catSelect.value = "NEET";
+                    else if (cat.includes('physics') || cat.includes('chemistry') || cat.includes('math')) catSelect.value = "IIT-JEE";
+                    else if (cat.includes('psychology') || cat.includes('help')) catSelect.value = "Self-Help";
+                }
+            } else {
+                alert("Book not found. Please try a different title or ISBN.");
+            }
+        }
+    </script>
+
+</body>
+</html>

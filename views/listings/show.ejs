@@ -3,49 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><%= listing.title %> | Details</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Book details</h1>
-    <ul>
-        <li><%= listing.title %></li>
-        <li><%= listing.discription %></li>
-        <li><%= listing.price %></li>
-        <li><%= listing.location %></li>
-    </ul>
-    <br>
-    <a href="/listings/<%= listing._id %>/edit">Edit</a>
-    <br>
-    <form method="post" action="/listings/<%=listing._id %>?_method=DELETE" >
-       <button>Delete</button>
-    </form>
-    
-<hr>
-    <h4>Leave a review</h4>
-    <form  action="/listings/<%= listing.id %>/reviews" method="POST" >
-        <div>
-            <lable for="rating">Rating</lable>
-            <input  type="range" min="1"  max="5" name="review[rating]" id="rating"/>
-        </div>
-        <div>
-             <lable for="commet">Rating</lable>
-            <textarea name="review[comment]" id="comment"></textarea>
-        </div>
-        <button>Submit</button>
-    </form>
 
-    <hr>
-    <h1>ALL Revirews</h1>
-    
-    <ul>
-        <% for(review of listing.reviews) { %>
-            <li><%= review.rating %>,<%= review.comment %></li>
+    <header class="site-header">
+        <h1><i class="fas fa-book-open"></i> MyBooks</h1>
+        <nav>
+            <a href="/listings">Back to Browse</a>
+        </nav>
+    </header>
 
+    <main class="show-container">
+
+        <div class="book-details-wrapper">
             
-            <form   method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" >
-                <button>Delete</button>
-            </form>
-        <% } %>
-    </ul>
+            <div class="book-visual">
+                <img 
+                    src="<%= listing.image %>" 
+                    alt="<%= listing.title %>" 
+                    class="show-img"
+                    onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
+                />
+            </div>
+
+            <div class="book-info">
+                <h1><%= listing.title %></h1>
+                
+                <div class="meta-info">
+                    <span><i class="fas fa-user"></i> <%= listing.author || 'Unknown Author' %></span>
+                    <span><i class="fas fa-map-marker-alt"></i> <%= listing.location || 'India' %></span>
+                    <span class="category-pill" style="padding: 4px 12px; font-size: 0.8rem;"><%= listing.category || 'General' %></span>
+                </div>
+
+                <div class="price-large">
+                    <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
+                    
+                    <% if(listing.mrp && listing.mrp > listing.price) { %>
+                        <span style="font-size: 1rem; color: #166534; background: #dcfce7; padding: 4px 8px; border-radius: 6px; margin-left: 10px; font-weight: 600;">
+                            <%= Math.round(((listing.mrp - listing.price)/listing.mrp)*100) %>% OFF
+                        </span>
+                        <span style="font-size: 1rem; color: #94a3b8; text-decoration: line-through; margin-left: 5px;">₹<%= listing.mrp %></span>
+                    <% } %>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+    
+    <p class="description-text <%= listing.description && listing.description.length > 250 ? 'line-clamp' : '' %>" id="descText">
+        <%= listing.description || "No description available for this book." %>
+    </p>
+
+    <% if(listing.description && listing.description.length > 250) { %>
+        <button onclick="toggleDescription()" id="toggleBtn" class="read-more-btn">
+            Read more <i class="fas fa-chevron-down"></i>
+        </button>
+    <% } %>
+
+</div>
+
+<script>
+    function toggleDescription() {
+        const text = document.getElementById('descText');
+        const btn = document.getElementById('toggleBtn');
+
+        if (text.classList.contains('line-clamp')) {
+            // Expand
+            text.classList.remove('line-clamp');
+            btn.innerHTML = 'Read less <i class="fas fa-chevron-up"></i>';
+        } else {
+            // Collapse
+            text.classList.add('line-clamp');
+            btn.innerHTML = 'Read more <i class="fas fa-chevron-down"></i>';
+        }
+    }
+</script>
+
+                <div class="buying-actions" style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px;">
+    
+    <h3 style="margin-top: 0; font-size: 1.25rem; color: var(--text-main); margin-bottom: 10px;">
+        Interested in this book?
+    </h3>
+    
+    <div style="margin-bottom: 20px; font-size: 0.95rem; color: #64748b; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 
+        <span>Seller is located in <strong><%= listing.location %></strong></span>
+    </div>
+
+    <% if(listing.email) { %>
+        <% 
+           const subject = `Interested in buying: ${listing.title}`;
+           const body = `Hi,\n\nI found your listing for '${listing.title}' on MyBooks (Price: ₹${listing.price}).\n\nIs it still available? I would like to arrange a purchase.\n\nThanks!`;
+           
+           // Link: Force Open Gmail (Web) - 100% Reliable for Demos
+           const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${listing.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        %>
+
+        <div style="margin-bottom: 20px;">
+            <a href="<%= gmailLink %>" 
+               target="_blank"
+               class="cta-button" 
+               style="background: #ea4335; border-color: #ea4335; color: white; width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; padding: 12px;">
+                <i class="fab fa-google"></i> Chat with Seller
+            </a>
+            
+            <div style="text-align: center; margin-top: 10px; font-size: 0.85rem; color: #64748b;">
+                or write to: <span style="font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;"><%= listing.email %></span>
+            </div>
+        </div>
+
+    <% } else { %>
+        <div style="background: #f1f5f9; color: #64748b; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
+            <i class="fas fa-exclamation-circle"></i> No contact email provided.
+        </div>
+    <% } %>
+
+    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; color: #475569;">
+        <strong>🛡️ Safe Buying Tips:</strong>
+        <ul style="margin: 5px 0 0 20px; padding: 0;">
+            <li>Keep conversations within email initially.</li>
+            <li>Meet in public places (Library, Canteen).</li>
+            <li>Check book condition before paying.</li>
+        </ul>
+    </div>
+
+</div>
+                <div class="action-btns">
+                    <a href="/listings/<%= listing._id %>/edit" class="btn-edit">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    
+                    <form method="post" action="/listings/<%= listing._id %>?_method=DELETE" style="margin:0;">
+                        <button class="btn-delete" onclick="return confirm('Are you sure you want to delete this book?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="review-section">
+            <h2><i class="far fa-comments"></i> Customer Reviews</h2>
+
+            <div class="review-form-card">
+                <h4>Write a Review</h4>
+                <form action="/listings/<%= listing.id %>/reviews" method="POST">
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 5px;">Rating</label>
+                        <fieldset class="star-fieldset">
+                            <input type="radio" id="rate5" name="review[rating]" value="5" />
+                            <label for="rate5" title="5 stars"><i class="fas fa-star"></i></label>
+
+                            <input type="radio" id="rate4" name="review[rating]" value="4" />
+                            <label for="rate4" title="4 stars"><i class="fas fa-star"></i></label>
+
+                            <input type="radio" id="rate3" name="review[rating]" value="3" />
+                            <label for="rate3" title="3 stars"><i class="fas fa-star"></i></label>
+
+                            <input type="radio" id="rate2" name="review[rating]" value="2" />
+                            <label for="rate2" title="2 stars"><i class="fas fa-star"></i></label>
+
+                            <input type="radio" id="rate1" name="review[rating]" value="1" checked />
+                            <label for="rate1" title="1 star"><i class="fas fa-star"></i></label>
+                        </fieldset>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="comment" style="font-weight: 600; display: block; margin-bottom: 8px;">Your Experience</label>
+                        <textarea 
+                            name="review[comment]" 
+                            id="comment" 
+                            rows="4" 
+                            class="form-control" 
+                            placeholder="Was the book in good condition? Was it helpful?" 
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button class="cta-button" style="width: 100%;">Post Review</button>
+                </form>
+            </div>
+
+            <% if(listing.reviews.length > 0) { %>
+                <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+                    <% for(review of listing.reviews) { %>
+                        <div class="review-card">
+                            
+                            <div class="review-header">
+                                <div class="static-stars">
+                                    <% for(let i=0; i<review.rating; i++) { %> <i class="fas fa-star"></i> <% } %>
+                                    <% for(let i=0; i<5-review.rating; i++) { %> <i class="far fa-star"></i> <% } %>
+                                </div>
+                            </div>
+
+                            <p class="review-body"><%= review.comment %></p>
+                            <div class="review-author">Verified Student</div>
+
+                            <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                <button class="btn-del-review">Delete</button>
+                            </form>
+
+                        </div>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="empty-state" style="background: transparent; border: 2px dashed #cbd5e1; padding: 40px;">
+                    <p style="color: #64748b;">No reviews yet. Be the first to share your thoughts!</p>
+                </div>
+            <% } %>
+
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>Made with ❤️ for Hackathon 2026</p>
+    </footer>
+
 </body>
 </html>

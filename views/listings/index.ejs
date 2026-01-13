@@ -55,20 +55,29 @@
         
         <div id="near-books-container" class="horizontal-scroll">
           <% allListings.reverse().forEach(listing => { %>
-            <div class="listing-card small">
+            
+            <a href="/listings/<%= listing._id %>" class="listing-card small">
+              
               <div class="book-image">
-                <img src="<%= listing.image %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"/>
+                <img 
+                    src="<%= listing.image %>" 
+                    alt="<%= listing.title %>" 
+                    style="height: 100%; width: 100%; object-fit: cover;"
+                    onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
+                />
               </div>
+
               <h3>
-                <a href="/listings/<%= listing._id %>">
-                  <%= listing.title.length > 20 ? listing.title.substring(0, 20) + '...' : listing.title %>
-                </a>
+                <%= listing.title.length > 20 ? listing.title.substring(0, 20) + '...' : listing.title %>
               </h3>
+
               <div class="card-bottom-row">
                  <div class="price"><%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %></div>
                  <small style="color: var(--text-muted);"><%= listing.location || 'India' %></small>
               </div>
-            </div>
+
+            </a>
+
           <% }) %>
         </div>
       </section>
@@ -158,7 +167,8 @@
 
       </section>
 
-    <% } %> </main>
+    <% } %> 
+  </main>
 
   <footer class="site-footer">
     <p>Made with ❤️ for Hackathon 2026</p>
