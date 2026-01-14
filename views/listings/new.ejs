@@ -27,6 +27,7 @@
                     </div>
                     <img id="preview-img" src="" style="display: none;" />
                 </div>
+                
 
                 <div class="cover-btns">
                     <p style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">Image URL</p>
@@ -98,9 +99,28 @@
                         </select>
                         <div class="invalid-feedback">Please select a category.</div>
                     </div>
+
                     <div class="form-group">
-                        <label>Your Location <span style="color: red;">*</span></label>
-                        <input name="listing[location]" placeholder="e.g. Hostel 4, Mumbai" type="text" class="form-control" required />
+                        <label>Meeting Location <span style="color: red;">*</span></label>
+                        <div class="input-group" style="display: flex;">
+                             <input
+                                type="text"
+                                name="listing[location]"
+                                id="locationInput"
+                                class="form-control"
+                                value="<%= currUser.location %>"
+                                placeholder="Search for a location..."
+                                required
+                                style="border-radius: 8px 0 0 8px;"
+                            />
+                            <button type="button" onclick="resetLocation()" title="Reset to my default location" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-left: 0; padding: 0 15px; border-radius: 0 8px 8px 0; cursor: pointer;">
+                                <i class="fas fa-map-marker-alt" style="color: #64748b;"></i>
+                            </button>
+                        </div>
+                        
+                        <input type="hidden" name="lat" id="lat" value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[1] : 0 %>">
+                        <input type="hidden" name="lng" id="lng" value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[0] : 0 %>">
+
                         <div class="invalid-feedback">Please enter your location.</div>
                     </div>
                 </div>
@@ -155,7 +175,47 @@
     </main>
 
     <script>
-        // 1. Validation Logic
+      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+        key: "API", // 👈 DON'T FORGET TO PASTE YOUR KEY!
+        v: "weekly",
+      });
+    </script>
+
+    <script>
+        // --- GOOGLE AUTOCOMPLETE LOGIC ---
+        let autocomplete;
+
+        async function initAutocomplete() {
+            const { Autocomplete } = await google.maps.importLibrary("places");
+            const input = document.getElementById("locationInput");
+            
+            autocomplete = new Autocomplete(input, {
+                fields: ["geometry", "name"],
+                types: ["geocode"]
+            });
+
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) return;
+
+                // Update Hidden Fields
+                document.getElementById("lat").value = place.geometry.location.lat();
+                document.getElementById("lng").value = place.geometry.location.lng();
+            });
+        }
+
+        function resetLocation() {
+            // Reset to data from User Profile
+            // (These EJS tags render server-side, so they work inside JS too)
+            document.getElementById("locationInput").value = "<%= currUser.location %>";
+            document.getElementById("lat").value = "<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[1] : 0 %>";
+            document.getElementById("lng").value = "<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[0] : 0 %>";
+        }
+
+        initAutocomplete();
+
+
+        // --- EXISTING LOGIC (Validation, ISBN, etc.) ---
         (() => {
             'use strict'
             const forms = document.querySelectorAll('.needs-validation');
@@ -170,7 +230,6 @@
             })
         })();
 
-        // 2. Image Preview Logic
         function updatePreview(url) {
             const previewImg = document.getElementById('preview-img');
             const placeholder = document.getElementById('placeholder-content');
@@ -185,7 +244,6 @@
             }
         }
 
-        // 3. Price Validation
         function validatePrice() {
             const mrp = parseFloat(document.getElementById('mrp').value) || 0;
             const price = parseFloat(document.getElementById('price').value) || 0;
@@ -206,7 +264,7 @@
             }
         }
 
-        // 4. FETCH BY ISBN
+        // FETCH BY ISBN
         async function fetchByISBN() {
             const isbn = document.getElementById('isbn-input').value.trim();
             const btn = document.getElementById('isbn-btn');
@@ -229,7 +287,7 @@
             }
         }
 
-        // 5. FETCH BY TITLE
+        // FETCH BY TITLE
         async function fetchByTitle() {
             const title = document.getElementById('title').value;
             const author = document.getElementById('author').value;
@@ -261,7 +319,7 @@
             }
         }
 
-        // 6. SHARED DATA HANDLER
+        // SHARED DATA HANDLER
         function handleBookData(data) {
             if (data.items && data.items.length > 0) {
                 const info = data.items[0].volumeInfo;

@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Review = require("./review.js"); // ✅ Added Review model import
+const Review = require("./review.js");
+const User = require("./user.js"); // Ensure User model is loaded
 
+// Standard fallback image if user doesn't provide one
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f";
 
 const listingSchema = new Schema(
@@ -12,6 +14,7 @@ const listingSchema = new Schema(
       trim: true
     },
 
+    // Fixed spelling: Friend had 'discription', we use 'description'
     description: {
       type: String,
       trim: true
@@ -23,24 +26,17 @@ const listingSchema = new Schema(
       set: (v) => (v && v.trim() !== "" ? v : DEFAULT_IMAGE)
     },
 
-    // 🔍 Helps debugging + UI badge later
-    imageSource: {
-      type: String,
-      enum: ["google", "openlibrary", "fallback"],
-      default: "fallback"
-    },
-
     price: {
       type: Number,
       min: 0,
       required: true
     },
 
-    // ✅ NEW: Required for the "50% OFF" badge logic
+    // ✅ YOUR FEATURE: Required for the "50% OFF" badge logic
     mrp: {
       type: Number,
       min: 0,
-      required: true
+      default: 0
     },
 
     location: {
@@ -49,19 +45,13 @@ const listingSchema = new Schema(
       required: true
     },
 
+    // Standardized: Friend had 'bookAuthor', we use 'author'
     author: {
       type: String,
       trim: true
     },
 
-    // 📧 NEW: Temporary Email field (Until we add Authentication)
-    // This connects the Buyer to the Seller
-    email: {
-      type: String,
-      required: true,
-      trim: true
-    },
-
+    // ✅ YOUR FEATURE: Categories for filtering
     category: {
       type: String,
       enum: [
@@ -77,7 +67,7 @@ const listingSchema = new Schema(
       default: "Other"
     },
 
-    // ✅ geometry must be its own field
+    // ✅ YOUR FEATURE: Maps support
     geometry: {
       type: {
         type: String,
@@ -85,33 +75,21 @@ const listingSchema = new Schema(
         default: "Point"
       },
       coordinates: {
-        type: [Number],   // [lng, lat]
+        type: [Number],   // Format: [lng, lat]
+        required: true
       }
     },
 
-
-
-    image: {
-      type: String,
-      default: DEFAULT_IMAGE,
-      set: (v) => (v && v.trim() !== "" ? v : DEFAULT_IMAGE)
-    },
-
-    // 🔍 Helps debugging + UI badge later
-    imageSource: {
-      type: String,
-      enum: ["google", "openlibrary", "fallback"],
-      default: "fallback"
-    },
-
-    price: {
-      type: Number,
-      min: 0
-    },
-
-    location: {
+    // 📧 Contact info (Can be auto-filled from Owner later)
+    email: {
       type: String,
       trim: true
+    },
+
+    // ✅ FRIEND'S FEATURE: Links the book to a logged-in user
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
 
     // Relation to Reviews
@@ -122,7 +100,7 @@ const listingSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true } // Auto-adds createdAt and updatedAt
 );
 
 // 🚀 Speeds up category filtering
