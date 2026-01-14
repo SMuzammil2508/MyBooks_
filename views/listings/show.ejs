@@ -6,7 +6,9 @@
     <title>Document</title>
 </head>
 <body>
+     <%= error %>
     <h1>Book details</h1>
+     <p><b>Owned By:</b><i></i><%= listing.owner.username %></i></p> 
     <ul>
         <li><%= listing.title %></li>
         <li><%= listing.discription %></li>
@@ -28,7 +30,7 @@
             <input  type="range" min="1"  max="5" name="review[rating]" id="rating"/>
         </div>
         <div>
-             <lable for="commet">Rating</lable>
+             <lable for="commet">comment</lable>
             <textarea name="review[comment]" id="comment"></textarea>
         </div>
         <button>Submit</button>
