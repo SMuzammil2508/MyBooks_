@@ -1,0 +1,48 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="section">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 40px auto;">
+        <h1 class="section-title">My Listings 📚</h1>
+        <a href="/listings/new" class="cta-button">+ Sell New Book</a>
+    </div>
+
+    <% if(listings.length === 0) { %>
+        <div class="empty-state">
+            <i class="fas fa-box-open" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
+            <h3>You haven't listed any books yet</h3>
+            <p>Start selling your old books today!</p>
+        </div>
+    <% } else { %>
+
+        <div class="listings-container">
+            <% listings.forEach(listing => { %>
+                <div class="listing-card">
+                    
+                    <a href="/listings/<%= listing._id %>" class="card-link">
+                        <div class="book-image">
+                            <img src="<%= listing.image %>" alt="<%= listing.title %>">
+                        </div>
+                        <h3><%= listing.title.length > 25 ? listing.title.substring(0, 25) + '...' : listing.title %></h3>
+                        <div class="price" style="margin-bottom: 10px;">₹<%= listing.price.toLocaleString("en-IN") %></div>
+                    </a>
+
+                    <div style="display: flex; gap: 10px; margin-top: auto; border-top: 1px solid var(--border); padding-top: 15px;">
+                        
+                        <a href="/listings/<%= listing._id %>/edit" 
+                           style="flex: 1; text-align: center; padding: 8px; border-radius: 6px; background: var(--bg-soft); color: var(--primary); font-weight: 600; font-size: 0.9rem; border: 1px solid var(--border);">
+                           Edit
+                        </a>
+
+                        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" style="flex: 1;">
+                            <button style="width: 100%; padding: 8px; border-radius: 6px; background: white; color: #ef4444; border: 1px solid #ef4444; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+                                Delete
+                            </button>
+                        </form>
+                        
+                    </div>
+
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>

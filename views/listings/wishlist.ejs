@@ -1,0 +1,42 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="section">
+    <h1 class="section-title" style="text-align: center; margin-bottom: 40px;">My Wishlist ❤️</h1>
+
+    <% if(listings.length === 0) { %>
+        <div class="empty-state">
+            <i class="fas fa-heart-broken" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
+            <h3>Your wishlist is empty</h3>
+            <p>Save books you want to buy later!</p>
+            <br>
+            <a href="/listings" class="cta-button">Browse Books</a>
+        </div>
+    <% } else { %>
+
+        <div class="listings-container">
+            <% listings.forEach(listing => { %>
+                <div class="listing-card wishlist-card">
+                    
+                    <form action="/wishlist/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline;">
+                        <button class="remove-wishlist-btn" title="Remove from Wishlist">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+
+                    <a href="/listings/<%= listing._id %>" class="card-link">
+                        <div class="book-image">
+                            <img src="<%= listing.image %>" alt="<%= listing.title %>">
+                        </div>
+                        
+                        <h3><%= listing.title.length > 25 ? listing.title.substring(0, 25) + '...' : listing.title %></h3>
+                        
+                        <div class="card-bottom-row">
+                            <div class="price">₹<%= listing.price.toLocaleString("en-IN") %></div>
+                            <small style="color: var(--text-muted);"><%= listing.location %></small>
+                        </div>
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>

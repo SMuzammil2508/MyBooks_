@@ -4,23 +4,31 @@ const wrapAsync = require("../utils/wrapAsync");
 const listingController = require("../controllers/listings.js"); 
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
+// ✅ CORRECTED PATH: (plural 'listings.js')
+const Listing = require("../models/listings.js"); 
+
+// ---------------------------------------------------------
+// 0. My Books Route (MUST be before /:id)
+// ---------------------------------------------------------
+router.get("/my-books", isLoggedIn, async (req, res) => {
+    const myListings = await Listing.find({ owner: req.user._id });
+    res.render("listings/my-books.ejs", { listings: myListings });
+});
+
 // ---------------------------------------------------------
 // 1. Index & Create Routes ("/")
 // ---------------------------------------------------------
 router
   .route("/")
-  // GET /listings -> Show all books (and handle search)
   .get(wrapAsync(listingController.index))
-  // POST /listings -> Create a new book
   .post(
-    isLoggedIn,         // Check if user is logged in
-    validateListing,    // Check if data is valid (Joi)
+    isLoggedIn,         
+    validateListing,    
     wrapAsync(listingController.createListing)
   );
 
 // ---------------------------------------------------------
 // 2. New Form Route ("/new")
-// ⚠️ MUST be defined BEFORE /:id, otherwise "new" is treated as an ID
 // ---------------------------------------------------------
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
@@ -29,16 +37,13 @@ router.get("/new", isLoggedIn, listingController.renderNewForm);
 // ---------------------------------------------------------
 router
   .route("/:id")
-  // GET /listings/:id -> Show details
   .get(wrapAsync(listingController.showListing))
-  // PUT /listings/:id -> Update listing
   .put(
     isLoggedIn,
-    isOwner,            // Check if user owns this book
+    isOwner,            
     validateListing,
     wrapAsync(listingController.updateListing)
   )
-  // DELETE /listings/:id -> Delete listing
   .delete(
     isLoggedIn,
     isOwner,

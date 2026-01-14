@@ -12,9 +12,7 @@
     </div>
 
     <nav style="display: flex; align-items: center; gap: 20px;">
-        <a href="/wishlist">❤️ Wishlist</a>
-
-
+        
         <a href="/listings" style="text-decoration: none; color: #555; font-weight: 500; transition: color 0.3s;">
             Explore
         </a>
@@ -27,16 +25,56 @@
                 style="background-color: #222; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
                 Sign Up
             </a>
-            <% } else { %>
-                <a href="/listings/new" class="cta-button"
-                    style="background-color: var(--primary); color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;">
-                    <i class="fas fa-plus"></i> Sell Book
+        
+        <% } else { %>
+            <a href="/listings/new" class="cta-button"
+                style="background-color: var(--primary); color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;">
+                <i class="fas fa-plus"></i> Sell Book
+            </a>
+
+            <div class="dropdown">
+                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                    
+                    <% if (currUser.image) { %>
+                        <img src="<%= currUser.image %>" alt="Profile" class="nav-profile-img">
+                    <% } else { %>
+                        <div class="nav-profile-icon">
+                            <%= currUser.username[0].toUpperCase() %>
+                        </div>
+                    <% } %>
                 </a>
 
-                <a href="/logout" style="text-decoration: none; color: #d9534f; font-weight: 600; margin-left: 10px;">
-                    Log Out
-                </a>
-                <% } %>
+                <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 10px;">
+                    <li><h6 class="dropdown-header">Hello, <%= currUser.username %>!</h6></li>
+                    
+                    <li>
+                        <a class="dropdown-item" href="/profile" style="padding: 8px 15px; border-radius: 6px;">
+                            <i class="fas fa-user-circle" style="width: 20px; color: #555;"></i> My Profile
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="/wishlist" style="padding: 8px 15px; border-radius: 6px;">
+                            <i class="fas fa-heart" style="width: 20px; color: #e11d48;"></i> Wishlist
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="/listings/my-books" style="padding: 8px 15px; border-radius: 6px;">
+                            <i class="fas fa-book" style="width: 20px; color: #3b82f6;"></i> My Listings
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <li>
+                        <a class="dropdown-item" href="/logout" style="padding: 8px 15px; border-radius: 6px; color: #ef4444;">
+                            <i class="fas fa-sign-out-alt" style="width: 20px;"></i> Log Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        <% } %>
 
     </nav>
 </header>

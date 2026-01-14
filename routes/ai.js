@@ -1,12 +1,13 @@
 const express = require("express");
-const { GoogleGenAI } = require("@google/genai");
-const Listing = require("../models/listings");
-
 const router = express.Router();
+const Listing = require("../models/listings"); // Ensure this path matches your project structure
+// FIX: Using the package you successfully installed
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const client = new GoogleGenAI({
-    apiKey: "APIKEY"
-});
+// --- CONFIGURATION ---
+const API_KEY = "AIzaSyBYbB142QxUaHWFG6q2P0wcnETojOmwXVo"; // ⚠️ Hardcoded for now
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 router.post("/recommend", async (req, res) => {
     try {
@@ -14,57 +15,48 @@ router.post("/recommend", async (req, res) => {
 
         const { query } = req.body;
         if (!query) return res.json({ response: "No query provided" });
-        if (query.length > 500) {
-            return res.json({ response: "Message too long. Please keep it under 500 characters." });
-        }
 
+        // 1. Fetch all books from your Database
         const listings = await Listing.find({});
 
+        // 2. Prepare the list for the AI
         const booksText = listings.map(b => `
-Title: ${b.title}
-Description: ${b.description || "No description"}
-Category: ${b.category || "General"}
-`).join("\n");
+        - Title: ${b.title}
+          Author: ${b.author || "Unknown"}
+          Price: ₹${b.price}
+          Category: ${b.category || "General"}
+          Description: ${b.description}
+        `).join("\n");
 
+        // 3. Create the Prompt
         const prompt = `
-You are MyBooks AI, a friendly, intelligent book assistant inside a book marketplace.
+        You are MyBooks AI, a smart assistant for a student book marketplace.
+        
+        The user asked: "${query}"
 
-The user said: "${query}"
+        Here are the books currently available on our platform:
+        ${booksText}
 
-Here are the books available on the platform:
-${booksText}
+        Instructions:
+        - Recommend books from this list that match the user's need.
+        - If you recommend a book, mention its Price and Author.
+        - Explain WHY it is a good choice.
+        - If no book matches, politely say so and suggest they check back later.
+        - Be friendly and concise.
+        `;
 
-Your job:
-- Answer naturally like a helpful assistant.
-- Recommend books when relevant.
-- Explain WHY you recommend them.
-- If no book matches, suggest alternatives or say none are available.
-- Use a friendly tone.
+        // 4. Generate Answer
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
 
-Do NOT just return a list. Give a proper conversational response.
-`;
-
-
-        const result = await client.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: [
-                {
-                    role: "user",
-                    parts: [{ text: prompt }]
-                }
-            ]
-        });
-
-        const text = result.candidates[0].content.parts[0].text;
-
+        // 5. Send back to Frontend
         res.json({ response: text });
 
     } catch (err) {
-        console.error("Gemini error:", err);
-        res.status(500).json({ error: err.message });
+        console.error("Gemini Error:", err);
+        res.status(500).json({ error: "I am having trouble connecting to the AI brain right now." });
     }
 });
-
-
 
 module.exports = router;

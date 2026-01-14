@@ -1,0 +1,37 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="section">
+    <div class="show-container" style="max-width: 700px;">
+        
+        <div style="background: white; border-radius: var(--radius); padding: 40px; border: 1px solid var(--border); box-shadow: var(--shadow-md); text-align: center;">
+            
+            <div style="width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; background: var(--primary); color: var(--bg-paper); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800; border: 4px solid var(--accent); box-shadow: var(--shadow-sm);">
+                <% if(currUser.image) { %>
+                    <img src="<%= currUser.image %>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <% } else { %>
+                    <%= currUser.username[0].toUpperCase() %>
+                <% } %>
+            </div>
+
+            <h1 style="color: var(--primary); margin-bottom: 5px;"><%= currUser.username %></h1>
+            <p style="color: var(--text-muted); margin-bottom: 30px;"><%= currUser.email %></p>
+
+            <div style="display: flex; justify-content: center; gap: 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 30px;">
+                <div>
+                    <strong style="display: block; font-size: 1.5rem; color: var(--accent);"><%= currUser.listings ? currUser.listings.length : 0 %></strong>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">Books Listed</span>
+                </div>
+                <div>
+                    <strong style="display: block; font-size: 1.5rem; color: var(--primary);"><%= currUser.wishlist ? currUser.wishlist.length : 0 %></strong>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">In Wishlist</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <a href="/listings/my-books" class="cta-button" style="text-decoration: none;">Manage Listings</a>
+                <a href="/logout" class="cta-button" style="background: white; color: #ef4444 !important; border: 1px solid #ef4444; box-shadow: none;">Log Out</a>
+            </div>
+
+        </div>
+    </div>
+</div>

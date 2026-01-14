@@ -19,6 +19,7 @@
   "homepage": "https://github.com/SMuzammil2508/MyBooks_#readme",
   "dependencies": {
     "@google/genai": "^1.35.0",
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.13.2",
     "connect-flash": "^0.1.1",
     "dotenv": "^17.2.3",

@@ -63,10 +63,11 @@
               <div id="near-books-container" class="horizontal-scroll">
                 <% allListings.slice().reverse().forEach(listing=> { %>
 
-                  <a href="/listings/<%= listing._id %>" class="listing-card small"
-                    data-lat="<%= listing.geometry?.coordinates?.[1] %>"
-                    data-lng="<%= listing.geometry?.coordinates?.[0] %>">
-
+                  <div class="listing-card small" 
+                       onclick="window.location.href='/listings/<%= listing._id %>'"
+                       data-lat="<%= listing.geometry?.coordinates?.[1] %>"
+                       data-lng="<%= listing.geometry?.coordinates?.[0] %>"
+                       style="cursor: pointer;">
 
                     <div class="book-image">
                       <img src="<%= listing.image %>" alt="<%= listing.title %>"
@@ -81,9 +82,9 @@
                       <div class="price">
                         <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
                       </div>
-                      <!-- ❤️ Button OUTSIDE the link -->
+                      
                       <button class="wishlist-btn"
-                        onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<%= listing._id %>', this)">
+                        onclick="event.stopPropagation(); toggleWishlist('<%= listing._id %>', this)">
                         🤍
                       </button>
 
@@ -96,9 +97,7 @@
                         </small>
                       </div>
                     </div>
-
-
-                  </a>
+                  </div>
                   <% }) %>
               </div>
             </section>
@@ -125,9 +124,12 @@
                   <div class="listings-container">
                     <% allListings.forEach(listing=> { %>
 
-
-
-                      <a href="/listings/<%= listing._id %>" class="listing-card">
+                      <div class="listing-card" 
+                           onclick="window.location.href='/listings/<%= listing._id %>'"
+                           data-lat="<%= listing.geometry?.coordinates?.[1] %>"
+                           data-lng="<%= listing.geometry?.coordinates?.[0] %>"
+                           style="cursor: pointer;">
+                          
                         <div class="book-image">
                           <img src="<%= listing.image %>" alt="<%= listing.title %>"
                             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" />
@@ -139,20 +141,22 @@
                           <div class="price">
                             <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
                           </div>
-                          <!-- ❤️ Button OUTSIDE the link -->
+                          
                           <button class="wishlist-btn"
-                            onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<%= listing._id %>', this)">
+                            onclick="event.stopPropagation(); toggleWishlist('<%= listing._id %>', this)">
                             🤍
                           </button>
 
-
-
-
-                          <small style="color: var(--text-muted);">
-                            <%= listing.location || 'India' %>
-                          </small>
+                          <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                            <small style="color: var(--text-muted);">
+                              <%= listing.location || 'India' %>
+                            </small>
+                            <small class="distance-text" style="color:#64748b; font-size:0.75rem;">
+                              Calculating...
+                            </small>
+                          </div>
                         </div>
-                      </a>
+                      </div>
                       <% }) %>
                   </div>
                 </div>
@@ -167,7 +171,12 @@
                           <% if(catBooks.length> 0) { %>
                             <% catBooks.forEach(listing=> { %>
 
-                              <a href="/listings/<%= listing._id %>" class="listing-card">
+                              <div class="listing-card" 
+                                   onclick="window.location.href='/listings/<%= listing._id %>'"
+                                   data-lat="<%= listing.geometry?.coordinates?.[1] %>"
+                                   data-lng="<%= listing.geometry?.coordinates?.[0] %>"
+                                   style="cursor: pointer;">
+                                
                                 <div class="book-image">
                                   <img src="<%= listing.image %>" alt="<%= listing.title %>"
                                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" />
@@ -180,11 +189,22 @@
                                   <div class="price">
                                     <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
                                   </div>
-                                  <small style="color: var(--text-muted);">
-                                    <%= listing.location || 'India' %>
-                                  </small>
+                                  
+                                  <button class="wishlist-btn"
+                                    onclick="event.stopPropagation(); toggleWishlist('<%= listing._id %>', this)">
+                                    🤍
+                                  </button>
+                                  
+                                  <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                                    <small style="color: var(--text-muted);">
+                                      <%= listing.location || 'India' %>
+                                    </small>
+                                    <small class="distance-text" style="color:#64748b; font-size:0.75rem;">
+                                      Calculating...
+                                    </small>
+                                  </div>
                                 </div>
-                              </a>
+                              </div>
 
                               <% }) %>
                                 <% } else { %>
@@ -252,43 +272,52 @@
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
 
-          sortBooksByDistance(userLat, userLng);
+          // Call new function that updates everything
+          updateAllDistances(userLat, userLng);
         }, () => {
           console.warn("Location access denied — fallback order used.");
         });
       }
 
-      function sortBooksByDistance(userLat, userLng) {
-        const container = document.getElementById("near-books-container");
-        const cards = Array.from(container.querySelectorAll(".listing-card"));
+      function updateAllDistances(userLat, userLng) {
+        // 1. UPDATE TEXT FOR EVERY SINGLE CARD ON THE PAGE
+        const allCards = document.querySelectorAll(".listing-card");
 
-        const cardsWithDistance = cards.map(card => {
+        allCards.forEach(card => {
           const lat = parseFloat(card.dataset.lat);
           const lng = parseFloat(card.dataset.lng);
-
           const distanceEl = card.querySelector(".distance-text");
 
-          if (isNaN(lat) || isNaN(lng)) {
+          // If valid coordinates exist
+          if (!isNaN(lat) && !isNaN(lng)) {
+            const distance = haversine(userLat, userLng, lat, lng);
+            
+            // Update the text
+            if (distanceEl) {
+                distanceEl.innerText = ` ${distance.toFixed(1)} km away`;
+            }
+            // Store distance on the element for sorting
+            card.dataset.distance = distance;
+          } else {
             if (distanceEl) distanceEl.innerText = " Distance unknown";
-            return { card, distance: Infinity };
+            card.dataset.distance = 999999; // Push to end
           }
-
-          const distance = haversine(userLat, userLng, lat, lng);
-
-          // 👇 THIS LINE DISPLAYS DISTANCE ON CARD
-          if (distanceEl) {
-            distanceEl.innerText = ` ${distance.toFixed(1)} km away`;
-          }
-
-          return { card, distance };
         });
 
-        cardsWithDistance.sort((a, b) => a.distance - b.distance);
+        // 2. SORT ONLY THE "NEAR BOOKS" CONTAINER
+        const nearContainer = document.getElementById("near-books-container");
+        if(nearContainer) {
+            const nearCards = Array.from(nearContainer.children);
+            
+            nearCards.sort((a, b) => {
+                return parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance);
+            });
 
-        container.innerHTML = "";
-        cardsWithDistance.forEach(item => container.appendChild(item.card));
+            // Re-append in correct order
+            nearContainer.innerHTML = "";
+            nearCards.forEach(card => nearContainer.appendChild(card));
+        }
       }
-
 
       function haversine(lat1, lon1, lat2, lon2) {
         const R = 6371; // km
@@ -306,8 +335,5 @@
     </script>
     <script src="/js/wishlist.js"></script>
 
-
-
 </body>
-
 </html>

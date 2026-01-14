@@ -11,25 +11,29 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 const ExpressError = require("./utils/ExpressError.js");
 
-// ✅ IMPORT ROUTERS (The "Map")
+// ✅ IMPORT ROUTERS
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
-const aiRoutes = require("./routes/ai.js");
+const aiRoutes = require("./routes/ai.js"); // Make sure this file exists in /routes/
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/mybook123";
+
+// Load environment variables if not in production
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
 
+// Connect to Database
 main()
-  .then(() => console.log("connect to DB"))
+  .then(() => console.log("Connected to DB"))
   .catch((err) => console.log(err));
 
 async function main() {
   await mongoose.connect(MONGO_URL);
 }
 
+// App Configuration
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -39,6 +43,7 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Session Configuration
 const sessionOption = {
   secret: "mysupersectercode",
   resave: false,
@@ -53,39 +58,39 @@ const sessionOption = {
 app.use(session(sessionOption));
 app.use(flash());
 
+// Authentication (Passport)
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Global Local Variables (Middleware)
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser = req.user; // Required for Navbar Logic
+  res.locals.currUser = req.user;
+  // Pass Map Token to all views if needed
+  res.locals.mapToken = process.env.MAP_TOKEN; 
   next();
 });
 
 // ---------------------------------------------------------
-// 🚀 ROUTES (Short & Sweet)
+// 🚀 ROUTES
 // ---------------------------------------------------------
 
 app.get("/", (req, res) => {
   res.render("listings/landing.ejs");
 });
 
-// Use the Routers we built
+// Use the Routers
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
-app.use("/ai", aiRoutes);
+app.use("/ai", aiRoutes); 
 
-
-const wishlistRoutes = require("./public/js/wishlist.js");
-app.use("/wishlist", wishlistRoutes);
-
-
-
+// ❌ DELETED: The 'wishlist' lines were causing the crash.
+// Public JS files cannot be required here.
 
 // ---------------------------------------------------------
 // 🚨 ERROR HANDLING
@@ -100,6 +105,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { err });
 });
 
+// Start Server
 app.listen(8080, () => {
   console.log("Server is listening on port 8080");
 });
