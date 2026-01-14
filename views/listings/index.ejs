@@ -10,172 +10,249 @@
 </head>
 
 <body>
-  <% layout("layouts/boilerplate") %> 
+  <% layout("layouts/boilerplate") %>
 
-  <div class="hero-section">
-    <h1 class="hero-title">Find Your Next Chapter</h1>
-    <p class="hero-sub">
-      Buy and sell used books within your campus.
-      Save money, save trees, and read more.
-    </p>
+    <div class="hero-section">
+      <h1 class="hero-title">Find Your Next Chapter</h1>
+      <p class="hero-sub">
+        Buy and sell used books within your campus.
+        Save money, save trees, and read more.
+      </p>
 
-    <form action="/listings" method="GET" class="hero-search">
-      <input 
-        type="text" 
-        name="search" 
-        placeholder="Search for 'Physics', 'Novels'..." 
-        value="<%= typeof search != 'undefined' ? search : '' %>"
-      />
-      <button type="submit"><i class="fas fa-search"></i></button>
-    </form>
-  </div>
+      <form action="/listings" method="GET" class="hero-search">
+        <input type="text" name="search" placeholder="Search for 'Physics', 'Novels'..."
+          value="<%= typeof search != 'undefined' ? search : '' %>" />
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
 
-  <main>
-    <% if(allListings.length === 0) { %>
-      <section class="section">
-        <div class="empty-state">
-          
-          <% if(typeof search != 'undefined' && search) { %>
-            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-            <h2>No results for "<%= search %>"</h2>
-            <p>Try checking your spelling or browse all categories.</p>
-            <br>
-            <a href="/listings" class="cta-button" style="background: #64748b;">Clear Search</a>
-          
-          <% } else { %>
-            <h2>No Books Available Yet</h2>
-            <p>Be the first to list a book and save the planet!</p>
-            <br>
-            <a href="/listings/new" class="cta-button">Add a Book Now</a>
-          <% } %>
+    <main>
+      <% if(allListings.length===0) { %>
+        <section class="section">
+          <div class="empty-state">
 
-        </div>
-      </section>
-    
-    <% } else { %>
+            <% if(typeof search !='undefined' && search) { %>
+              <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+              <h2>No results for "<%= search %>"</h2>
+              <p>Try checking your spelling or browse all categories.</p>
+              <br>
+              <a href="/listings" class="cta-button" style="background: #64748b;">Clear Search</a>
 
-      <% if(!search) { %>
-          <section class="section" style="padding-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline;">
-              <h2 class="section-title">📍 Books Near You</h2>
-              <a href="javascript:void(0)" onclick="toggleNearBooks()" id="view-all-btn"
-                style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; cursor: pointer;">
-                View All &rarr;
-              </a>
-            </div>
-            
-            <div id="near-books-container" class="horizontal-scroll">
-              <% allListings.slice().reverse().forEach(listing => { %>
-                
-                <a href="/listings/<%= listing._id %>" class="listing-card small">
-                  
-                  <div class="book-image">
-                    <img src="<%= listing.image %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"/>
-                  </div>
-                  
-                  <h3>
-                    <%= listing.title.length > 20 ? listing.title.substring(0, 20) + '...' : listing.title %>
-                  </h3>
+              <% } else { %>
+                <h2>No Books Available Yet</h2>
+                <p>Be the first to list a book and save the planet!</p>
+                <br>
+                <a href="/listings/new" class="cta-button">Add a Book Now</a>
+                <% } %>
 
-                  <div class="card-bottom-row">
-                     <div class="price"><%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %></div>
-                     <small style="color: var(--text-muted);"><%= listing.location || 'India' %></small>
-                  </div>
-                
-                </a> <% }) %>
-            </div>
-          </section>
-
-          <section class="section soft-bg" style="margin-top: 40px; border-bottom: none;">
-            <h2 class="section-title">Browse by Category</h2>
-            <div class="category-grid">
-              <button class="category-pill active" onclick="filterBooks('all', this)">All Books</button>
-              <button class="category-pill" onclick="filterBooks('iit', this)">IIT-JEE</button>
-              <button class="category-pill" onclick="filterBooks('neet', this)">NEET</button>
-              <button class="category-pill" onclick="filterBooks('fiction', this)">Fiction</button>
-              <button class="category-pill" onclick="filterBooks('self-help', this)">Self-Help</button>
-              <button class="category-pill" onclick="filterBooks('non-fiction', this)">Non-Fiction</button>
-            </div>
-          </section>
-      <% } %>
-
-      <section class="section" style="min-height: 500px;">
-
-        <div id="cat-all" class="category-section active-content">
-          <h3 class="section-sub"><%= search ? `Search Results for "${search}"` : 'Showing all available books' %></h3>
-          <div class="listings-container">
-            <% allListings.forEach(listing=> { %>
-              <%- include('_card_partial', {listing: listing}) %>
-            <% }) %>
           </div>
-        </div>
+        </section>
 
-        <% if(!search) { %>
-            <% ['IIT-JEE', 'NEET', 'Fiction', 'Self-Help', 'Non-Fiction'].forEach(cat => { %>
-                <div id="cat-<%= cat.toLowerCase() %>" class="category-section">
-                  <h3 class="section-sub">Top books for <%= cat %></h3>
+        <% } else { %>
+
+          <% if(!search) { %>
+            <section class="section" style="padding-bottom: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h2 class="section-title">Books Near You</h2>
+                <a href="javascript:void(0)" onclick="toggleNearBooks()" id="view-all-btn"
+                  style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; cursor: pointer;">
+                  View All &rarr;
+                </a>
+              </div>
+
+              <div id="near-books-container" class="horizontal-scroll">
+                <% allListings.slice().reverse().forEach(listing=> { %>
+
+                  <a href="/listings/<%= listing._id %>" class="listing-card small"
+                    data-lat="<%= listing.geometry?.coordinates?.[1] %>"
+                    data-lng="<%= listing.geometry?.coordinates?.[0] %>">
+
+
+                    <div class="book-image">
+                      <img src="<%= listing.image %>" alt="<%= listing.title %>"
+                        onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" />
+                    </div>
+
+                    <h3>
+                      <%= listing.title.length> 20 ? listing.title.substring(0, 20) + '...' : listing.title %>
+                    </h3>
+
+                    <div class="card-bottom-row">
+                      <div class="price">
+                        <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
+                      </div>
+
+                      <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                        <small style="color: var(--text-muted);">
+                          <%= listing.location || 'India' %>
+                        </small>
+                        <small class="distance-text" style="color:#64748b; font-size:0.75rem;">
+                          Calculating...
+                        </small>
+                      </div>
+                    </div>
+
+
+                  </a>
+                  <% }) %>
+              </div>
+            </section>
+
+            <section class="section soft-bg" style="margin-top: 40px; border-bottom: none;">
+              <h2 class="section-title">Browse by Category</h2>
+              <div class="category-grid">
+                <button class="category-pill active" onclick="filterBooks('all', this)">All Books</button>
+                <button class="category-pill" onclick="filterBooks('iit', this)">IIT-JEE</button>
+                <button class="category-pill" onclick="filterBooks('neet', this)">NEET</button>
+                <button class="category-pill" onclick="filterBooks('fiction', this)">Fiction</button>
+                <button class="category-pill" onclick="filterBooks('self-help', this)">Self-Help</button>
+                <button class="category-pill" onclick="filterBooks('non-fiction', this)">Non-Fiction</button>
+              </div>
+            </section>
+            <% } %>
+
+              <section class="section" style="min-height: 500px;">
+
+                <div id="cat-all" class="category-section active-content">
+                  <h3 class="section-sub">
+                    <%= search ? `Search Results for "${search}" ` : 'Showing all available books' %>
+                  </h3>
                   <div class="listings-container">
-                    <% const catBooks = allListings.filter(b => b.category === cat); %>
-                    <% if(catBooks.length > 0) { %>
-                      <% catBooks.forEach(listing => { %> <%- include('_card_partial', {listing: listing}) %> <% }) %>
-                    <% } else { %>
-                       <div class="empty-state">No <%= cat %> books found.</div>
-                    <% } %>
+                    <% allListings.forEach(listing=> { %>
+                      <%- include('_card_partial', {listing: listing}) %>
+                        <% }) %>
                   </div>
                 </div>
-            <% }) %>
-        <% } %>
 
-      </section>
+                <% if(!search) { %>
+                  <% ['IIT-JEE', 'NEET' , 'Fiction' , 'Self-Help' , 'Non-Fiction' ].forEach(cat=> { %>
+                    <div id="cat-<%= cat.toLowerCase() %>" class="category-section">
+                      <h3 class="section-sub">Top books for <%= cat %>
+                      </h3>
+                      <div class="listings-container">
+                        <% const catBooks=allListings.filter(b=> b.category === cat); %>
+                          <% if(catBooks.length> 0) { %>
+                            <% catBooks.forEach(listing=> { %> <%- include('_card_partial', {listing: listing}) %>
+                                <% }) %>
+                                  <% } else { %>
+                                    <div class="empty-state">No <%= cat %> books found.</div>
+                                    <% } %>
+                      </div>
+                    </div>
+                    <% }) %>
+                      <% } %>
 
-    <% } %> 
-  </main>
+              </section>
 
-  <footer class="site-footer">
-    <p>Made with ❤️ for Hackathon 2026</p>
-  </footer>
+              <% } %>
+    </main>
 
-  <script>
-    /* 1. Expand "Books Near You" */
-    function toggleNearBooks() {
-      const container = document.getElementById('near-books-container');
-      const btn = document.getElementById('view-all-btn');
-      if (container.classList.contains('horizontal-scroll')) {
-        container.classList.remove('horizontal-scroll');
-        container.classList.add('listings-container');
-        btn.innerHTML = "Show Less &uarr;";
-        // Reset small card sizing when expanding
-        const cards = container.querySelectorAll('.listing-card');
-        cards.forEach(card => card.classList.remove('small'));
-      } else {
-        container.classList.remove('listings-container');
-        container.classList.add('horizontal-scroll');
-        btn.innerHTML = "View All &rarr;";
-        // Re-add small card sizing
-        const cards = container.querySelectorAll('.listing-card');
-        cards.forEach(card => card.classList.add('small'));
+    <footer class="site-footer">
+      <p>Made with ❤️ for Hackathon 2026</p>
+    </footer>
+
+    <script>
+      /* 1. Expand "Books Near You" */
+      function toggleNearBooks() {
+        const container = document.getElementById('near-books-container');
+        const btn = document.getElementById('view-all-btn');
+        if (container.classList.contains('horizontal-scroll')) {
+          container.classList.remove('horizontal-scroll');
+          container.classList.add('listings-container');
+          btn.innerHTML = "Show Less &uarr;";
+          // Reset small card sizing when expanding
+          const cards = container.querySelectorAll('.listing-card');
+          cards.forEach(card => card.classList.remove('small'));
+        } else {
+          container.classList.remove('listings-container');
+          container.classList.add('horizontal-scroll');
+          btn.innerHTML = "View All &rarr;";
+          // Re-add small card sizing
+          const cards = container.querySelectorAll('.listing-card');
+          cards.forEach(card => card.classList.add('small'));
+        }
       }
-    }
 
-    /* 2. Filter Categories */
-    function filterBooks(category, btnElement) {
-      // A. Hide all sections
-      const sections = document.querySelectorAll('.category-section');
-      sections.forEach(sec => sec.classList.remove('active-content'));
+      /* 2. Filter Categories */
+      function filterBooks(category, btnElement) {
+        // A. Hide all sections
+        const sections = document.querySelectorAll('.category-section');
+        sections.forEach(sec => sec.classList.remove('active-content'));
 
-      // B. Show target section
-      const targetId = 'cat-' + category;
-      const targetSection = document.getElementById(targetId);
-      if (targetSection) {
-        targetSection.classList.add('active-content');
+        // B. Show target section
+        const targetId = 'cat-' + category;
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.add('active-content');
+        }
+
+        // C. Update Buttons Highlight
+        const buttons = document.querySelectorAll('.category-pill');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+      }
+    </script>
+    <script>
+      // Get user's current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          sortBooksByDistance(userLat, userLng);
+        }, () => {
+          console.warn("Location access denied — fallback order used.");
+        });
       }
 
-      // C. Update Buttons Highlight
-      const buttons = document.querySelectorAll('.category-pill');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-    }
-  </script>
+      function sortBooksByDistance(userLat, userLng) {
+        const container = document.getElementById("near-books-container");
+        const cards = Array.from(container.querySelectorAll(".listing-card"));
+
+        const cardsWithDistance = cards.map(card => {
+          const lat = parseFloat(card.dataset.lat);
+          const lng = parseFloat(card.dataset.lng);
+
+          const distanceEl = card.querySelector(".distance-text");
+
+          if (isNaN(lat) || isNaN(lng)) {
+            if (distanceEl) distanceEl.innerText = " Distance unknown";
+            return { card, distance: Infinity };
+          }
+
+          const distance = haversine(userLat, userLng, lat, lng);
+
+          // 👇 THIS LINE DISPLAYS DISTANCE ON CARD
+          if (distanceEl) {
+            distanceEl.innerText = ` ${distance.toFixed(1)} km away`;
+          }
+
+          return { card, distance };
+        });
+
+        cardsWithDistance.sort((a, b) => a.distance - b.distance);
+
+        container.innerHTML = "";
+        cardsWithDistance.forEach(item => container.appendChild(item.card));
+      }
+
+
+      function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371; // km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(lat1 * Math.PI / 180) *
+          Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon / 2) ** 2;
+
+        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+      }
+    </script>
+
 
 </body>
+
 </html>

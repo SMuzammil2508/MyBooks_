@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= listing.title %> | Details</title>
-    <link rel="stylesheet" href="/css/style.css"/>
+    <title>
+        <%= listing.title %> | Details
+    </title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
     <header class="site-header">
@@ -15,127 +20,188 @@
             <a href="/listings">Back to Browse</a>
         </nav>
     </header>
+    <main class="show-container" id="showPage"
+        data-lat="<%= listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates[1] : '' %>"
+        data-lng="<%= listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates[0] : '' %>">
 
-    <main class="show-container">
+
 
         <div class="book-details-wrapper">
-            
+
             <div class="book-visual">
-                <img 
-                    src="<%= listing.image %>" 
-                    alt="<%= listing.title %>" 
-                    class="show-img"
-                    onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
-                />
+                <img src="<%= listing.image %>" alt="<%= listing.title %>" class="show-img"
+                    onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" />
             </div>
 
             <div class="book-info">
-                <h1><%= listing.title %></h1>
-                
+                <h1>
+                    <%= listing.title %>
+                </h1>
+
                 <div class="meta-info">
-                    <span><i class="fas fa-user"></i> <%= listing.author || 'Unknown Author' %></span>
-                    <span><i class="fas fa-map-marker-alt"></i> <%= listing.location || 'India' %></span>
-                    <span class="category-pill" style="padding: 4px 12px; font-size: 0.8rem;"><%= listing.category || 'General' %></span>
+                    <span><i class="fas fa-user"></i>
+                        <%= listing.author || 'Unknown Author' %>
+                    </span>
+                    <span><i class="fas fa-map-marker-alt"></i>
+                        <%= listing.location || 'India' %>
+                    </span>
+                    <span class="category-pill" style="padding: 4px 12px; font-size: 0.8rem;">
+                        <%= listing.category || 'General' %>
+                    </span>
                 </div>
 
                 <div class="price-large">
                     <%= listing.price ? '₹' + listing.price.toLocaleString("en-IN") : 'Free' %>
-                    
-                    <% if(listing.mrp && listing.mrp > listing.price) { %>
-                        <span style="font-size: 1rem; color: #166534; background: #dcfce7; padding: 4px 8px; border-radius: 6px; margin-left: 10px; font-weight: 600;">
-                            <%= Math.round(((listing.mrp - listing.price)/listing.mrp)*100) %>% OFF
-                        </span>
-                        <span style="font-size: 1rem; color: #94a3b8; text-decoration: line-through; margin-left: 5px;">₹<%= listing.mrp %></span>
-                    <% } %>
+
+                        <% if(listing.mrp && listing.mrp> listing.price) { %>
+                            <span
+                                style="font-size: 1rem; color: #166534; background: #dcfce7; padding: 4px 8px; border-radius: 6px; margin-left: 10px; font-weight: 600;">
+                                <%= Math.round(((listing.mrp - listing.price)/listing.mrp)*100) %>% OFF
+                            </span>
+                            <span
+                                style="font-size: 1rem; color: #94a3b8; text-decoration: line-through; margin-left: 5px;">₹
+                                <%= listing.mrp %>
+                            </span>
+                            <% } %>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-    
-    <p class="description-text <%= listing.description && listing.description.length > 250 ? 'line-clamp' : '' %>" id="descText">
-        <%= listing.description || "No description available for this book." %>
-    </p>
 
-    <% if(listing.description && listing.description.length > 250) { %>
-        <button onclick="toggleDescription()" id="toggleBtn" class="read-more-btn">
-            Read more <i class="fas fa-chevron-down"></i>
-        </button>
-    <% } %>
+                    <p class="description-text <%= listing.description && listing.description.length > 250 ? 'line-clamp' : '' %>"
+                        id="descText">
+                        <%= listing.description || "No description available for this book." %>
+                    </p>
 
-</div>
+                    <% if(listing.description && listing.description.length> 250) { %>
+                        <button onclick="toggleDescription()" id="toggleBtn" class="read-more-btn">
+                            Read more <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <% } %>
 
-<script>
-    function toggleDescription() {
-        const text = document.getElementById('descText');
-        const btn = document.getElementById('toggleBtn');
+                </div>
 
-        if (text.classList.contains('line-clamp')) {
-            // Expand
-            text.classList.remove('line-clamp');
-            btn.innerHTML = 'Read less <i class="fas fa-chevron-up"></i>';
-        } else {
-            // Collapse
-            text.classList.add('line-clamp');
-            btn.innerHTML = 'Read more <i class="fas fa-chevron-down"></i>';
-        }
-    }
-</script>
+                <script>
+                    function toggleDescription() {
+                        const text = document.getElementById('descText');
+                        const btn = document.getElementById('toggleBtn');
 
-                <div class="buying-actions" style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px;">
-    
-    <h3 style="margin-top: 0; font-size: 1.25rem; color: var(--text-main); margin-bottom: 10px;">
-        Interested in this book?
-    </h3>
-    
-    <div style="margin-bottom: 20px; font-size: 0.95rem; color: #64748b; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 
-        <span>Seller is located in <strong><%= listing.location %></strong></span>
-    </div>
+                        if (text.classList.contains('line-clamp')) {
+                            // Expand
+                            text.classList.remove('line-clamp');
+                            btn.innerHTML = 'Read less <i class="fas fa-chevron-up"></i>';
+                        } else {
+                            // Collapse
+                            text.classList.add('line-clamp');
+                            btn.innerHTML = 'Read more <i class="fas fa-chevron-down"></i>';
+                        }
+                    }
+                </script>
 
-    <% if(listing.email) { %>
-        <% 
-           const subject = `Interested in buying: ${listing.title}`;
-           const body = `Hi,\n\nI found your listing for '${listing.title}' on MyBooks (Price: ₹${listing.price}).\n\nIs it still available? I would like to arrange a purchase.\n\nThanks!`;
-           
-           // Link: Force Open Gmail (Web) - 100% Reliable for Demos
-           const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${listing.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        %>
+                <div class="buying-actions"
+                    style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px;">
 
-        <div style="margin-bottom: 20px;">
-            <a href="<%= gmailLink %>" 
-               target="_blank"
-               class="cta-button" 
-               style="background: #ea4335; border-color: #ea4335; color: white; width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; padding: 12px;">
-                <i class="fab fa-google"></i> Chat with Seller
-            </a>
-            
-            <div style="text-align: center; margin-top: 10px; font-size: 0.85rem; color: #64748b;">
-                or write to: <span style="font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;"><%= listing.email %></span>
-            </div>
-        </div>
+                    <h3 style="margin-top: 0; font-size: 1.25rem; color: var(--text-main); margin-bottom: 10px;">
+                        Interested in this book?
+                    </h3>
 
-    <% } else { %>
-        <div style="background: #f1f5f9; color: #64748b; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
-            <i class="fas fa-exclamation-circle"></i> No contact email provided.
-        </div>
-    <% } %>
+                    <div style="margin-bottom: 20px; font-size: 0.95rem; color: #64748b;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                            <span>Seller is located in <strong>
+                                    <%= listing.location %>
+                                </strong></span>
+                        </div>
 
-    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; color: #475569;">
-        <strong>🛡️ Safe Buying Tips:</strong>
-        <ul style="margin: 5px 0 0 20px; padding: 0;">
-            <li>Keep conversations within email initially.</li>
-            <li>Meet in public places (Library, Canteen).</li>
-            <li>Check book condition before paying.</li>
-        </ul>
-    </div>
+                        <div id="distanceText" style="margin-top: 6px; font-size: 0.85rem;">
+                            📍 Calculating distance...
+                        </div>
+                    </div>
 
-</div>
+
+                    <!-- THIS IS BOOK LOCATION MAP FROM OSM -->
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="margin-bottom: 10px;">📍 Book Location</h3>
+                        <div id="map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border);">
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!-- THIS IS OPEN TO GOOGLE MAPS BUTTON -->
+
+
+
+
+                    <div style="margin-top: 10px;">
+                        <a id="mapsLink" target="_blank" class="cta-button" style="width: 100%; text-align:center;padding: 4px;">
+                            📍 Open in Google Maps
+                        </a>
+                    </div>
+
+                    <!-- TRAVEL TIME CALCULATOR -->
+
+                    <div id="travelTime" style="font-size:0.8rem; color:#64748b;">
+                        ⏳ Calculating travel time...
+                    </div>
+
+
+
+
+
+                    <% if (listing.email) { %>
+
+                        <% const subject="Interested in buying: " + listing.title; const body="Hi,\n\n"
+                            + "I found your listing for '" + listing.title + "' on MyBooks (Price: ₹" + listing.price
+                            + ").\n\n" + "Is it still available? I would like to arrange a purchase.\n\n" + "Thanks!" ;
+                            const gmailLink="https://mail.google.com/mail/?view=cm&fs=1" + "&to=" + listing.email
+                            + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body); %>
+
+                            <div style="margin-bottom: 20px;">
+                                <a href="<%= gmailLink %>" target="_blank" class="cta-button"
+                                    style="background: #ea4335; border-color: #ea4335; color: white; width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; padding: 12px;">
+                                    <i class="fab fa-google"></i> Chat with Seller
+                                </a>
+
+                                <div style="text-align: center; margin-top: 10px; font-size: 0.85rem; color: #64748b;">
+                                    or write to:
+                                    <span
+                                        style="font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">
+                                        <%= listing.email %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <% } else { %>
+
+                                <div
+                                    style="background: #f1f5f9; color: #64748b; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
+                                    <i class="fas fa-exclamation-circle"></i> No contact email provided.
+                                </div>
+
+                                <% } %>
+
+
+                                    <div
+                                        style="background: #f8fafc; padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; color: #475569;">
+                                        <strong>🛡️ Safe Buying Tips:</strong>
+                                        <ul style="margin: 5px 0 0 20px; padding: 0;">
+                                            <li>Keep conversations within email initially.</li>
+                                            <li>Meet in public places (Library, Canteen).</li>
+                                            <li>Check book condition before paying.</li>
+                                        </ul>
+                                    </div>
+
+                </div>
                 <div class="action-btns">
                     <a href="/listings/<%= listing._id %>/edit" class="btn-edit">
                         <i class="fas fa-edit"></i> Edit
                     </a>
-                    
+
                     <form method="post" action="/listings/<%= listing._id %>?_method=DELETE" style="margin:0;">
-                        <button class="btn-delete" onclick="return confirm('Are you sure you want to delete this book?');">
+                        <button class="btn-delete"
+                            onclick="return confirm('Are you sure you want to delete this book?');">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </form>
@@ -150,7 +216,7 @@
             <div class="review-form-card">
                 <h4>Write a Review</h4>
                 <form action="/listings/<%= listing.id %>/reviews" method="POST">
-                    
+
                     <div style="margin-bottom: 15px;">
                         <label style="font-weight: 600; display: block; margin-bottom: 5px;">Rating</label>
                         <fieldset class="star-fieldset">
@@ -172,48 +238,53 @@
                     </div>
 
                     <div style="margin-bottom: 20px;">
-                        <label for="comment" style="font-weight: 600; display: block; margin-bottom: 8px;">Your Experience</label>
-                        <textarea 
-                            name="review[comment]" 
-                            id="comment" 
-                            rows="4" 
-                            class="form-control" 
-                            placeholder="Was the book in good condition? Was it helpful?" 
-                            required
-                        ></textarea>
+                        <label for="comment" style="font-weight: 600; display: block; margin-bottom: 8px;">Your
+                            Experience</label>
+                        <textarea name="review[comment]" id="comment" rows="4" class="form-control"
+                            placeholder="Was the book in good condition? Was it helpful?" required></textarea>
                     </div>
 
                     <button class="cta-button" style="width: 100%;">Post Review</button>
                 </form>
             </div>
 
-            <% if(listing.reviews.length > 0) { %>
+            <% if(listing.reviews.length> 0) { %>
                 <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
-                    <% for(review of listing.reviews) { %>
+                    <% for (const review of listing.reviews) { %>
                         <div class="review-card">
-                            
+
                             <div class="review-header">
                                 <div class="static-stars">
-                                    <% for(let i=0; i<review.rating; i++) { %> <i class="fas fa-star"></i> <% } %>
-                                    <% for(let i=0; i<5-review.rating; i++) { %> <i class="far fa-star"></i> <% } %>
+                                    <% for(let i=0; i<review.rating; i++) { %>
+                                        <i class="fas fa-star"></i>
+                                        <% } %>
+
+                                            <% for(let i=0; i<5-review.rating; i++) { %>
+                                                <i class="far fa-star"></i>
+                                                <% } %>
                                 </div>
                             </div>
 
-                            <p class="review-body"><%= review.comment %></p>
+                            <p class="review-body">
+                                <%= review.comment %>
+                            </p>
                             <div class="review-author">Verified Student</div>
 
-                            <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                            <form method="POST"
+                                action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
                                 <button class="btn-del-review">Delete</button>
                             </form>
 
                         </div>
+                        <% } %>
+                </div>
+                <% } else { %>
+
+                    <div class="empty-state"
+                        style="background: transparent; border: 2px dashed #cbd5e1; padding: 40px;">
+                        <p style="color: #64748b;">No reviews yet. Be the first to share your thoughts!</p>
+                    </div>
                     <% } %>
-                </div>
-            <% } else { %>
-                <div class="empty-state" style="background: transparent; border: 2px dashed #cbd5e1; padding: 40px;">
-                    <p style="color: #64748b;">No reviews yet. Be the first to share your thoughts!</p>
-                </div>
-            <% } %>
 
         </div>
 
@@ -222,6 +293,105 @@
     <footer class="site-footer">
         <p>Made with ❤️ for Hackathon 2026</p>
     </footer>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const page = document.getElementById("showPage");
+        const sellerLat = parseFloat(page.dataset.lat);
+        const sellerLng = parseFloat(page.dataset.lng);
+
+        console.log("Seller:", sellerLat, sellerLng);
+
+        if (isNaN(sellerLat) || isNaN(sellerLng)) {
+            document.getElementById("distanceText").innerText = "📍 Location not available";
+        } else {
+            getUserLocation();
+        }
+
+        function getUserLocation() {
+            const cached = localStorage.getItem("userLocation");
+
+            if (cached) {
+                const loc = JSON.parse(cached);
+                console.log("Using cached:", loc);
+                handleLocation(loc.lat, loc.lng);
+            } else if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+
+                        console.log("GPS:", lat, lng);
+
+                        localStorage.setItem("userLocation", JSON.stringify({ lat, lng }));
+                        handleLocation(lat, lng);
+                    },
+                    err => {
+                        console.error("Location error:", err);
+                        document.getElementById("distanceText").innerText = "📍 Location permission denied";
+                        initMap(sellerLat, sellerLng);
+                    }
+                );
+            }
+        }
+
+        function handleLocation(userLat, userLng) {
+            const distance = haversine(userLat, userLng, sellerLat, sellerLng);
+
+            document.getElementById("distanceText").innerText =
+                `📍 ${distance.toFixed(2)} km away`;
+
+            const walk = Math.round((distance / 5) * 60);
+            const drive = Math.round((distance / 30) * 60);
+
+            document.getElementById("travelTime").innerText =
+                `🚶 ${walk} min walk • 🚗 ${drive} min drive`;
+
+            document.getElementById("mapsLink").href =
+                `https://www.google.com/maps/dir/?api=1&destination=${sellerLat},${sellerLng}`;
+
+            initMap(userLat, userLng);
+        }
+
+        function initMap(userLat, userLng) {
+            const map = L.map("map").setView([sellerLat, sellerLng], 13);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            L.marker([sellerLat, sellerLng])
+                .addTo(map)
+                .bindPopup("📚 Book location")
+                .openPopup();
+
+            if (userLat && userLng) {
+                L.marker([userLat, userLng]).addTo(map).bindPopup("🧍 You");
+
+                L.polyline([
+                    [userLat, userLng],
+                    [sellerLat, sellerLng]
+                ], { dashArray: "5,10" }).addTo(map);
+            }
+        }
+
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+    </script>
+
+
+
 
 </body>
+
 </html>

@@ -14,6 +14,8 @@ const ExpressError = require("./utils/ExpressError.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/mybook123";
 
+
+
 main()
   .then(() => {
     console.log("connect to DB");
@@ -31,36 +33,42 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+
+
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // 👈 THIS IS REQUIRED
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+const aiRoutes = require("./routes/ai.js");
+app.use("/ai", aiRoutes);
 
 // ✅ ROOT ROUTE (Landing Page)
 // This must be here. Your old code had "I am root" which blocked this.
 app.get("/", (req, res) => {
-    res.render("listings/landing.ejs"); 
+  res.render("listings/landing.ejs");
 });
 
 // ✅ INDEX ROUTE (With Search Logic)
 // I updated this so your Search Bar works!
 app.get("/listings", async (req, res) => {
-    const { search } = req.query;
-    let allListings;
+  const { search } = req.query;
+  let allListings;
 
-    if (search) {
-        allListings = await Listing.find({
-            $or: [
-                { title: { $regex: search, $options: "i" } },
-                { author: { $regex: search, $options: "i" } }, // Added Author search
-                { category: { $regex: search, $options: "i" } }
-            ]
-        });
-    } else {
-        allListings = await Listing.find({});
-    }
+  if (search) {
+    allListings = await Listing.find({
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { author: { $regex: search, $options: "i" } }, // Added Author search
+        { category: { $regex: search, $options: "i" } }
+      ]
+    });
+  } else {
+    allListings = await Listing.find({});
+  }
 
-    // Pass 'search' to the view so the search box remembers what you typed
-    res.render("listings/index.ejs", { allListings, search: search || "" });
+  // Pass 'search' to the view so the search box remembers what you typed
+  res.render("listings/index.ejs", { allListings, search: search || "" });
 });
 
 // New route

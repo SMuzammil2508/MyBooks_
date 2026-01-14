@@ -140,3 +140,58 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollCarousel();
     }
 });
+/* -----------------------------
+   Distance stuff
+--------------------------------*/
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (!navigator.geolocation) {
+        console.error("Geolocation not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+
+            // console.log("User location:", userLat, userLng);
+
+            document.querySelectorAll("[data-lat][data-lng]").forEach(card => {
+                const lat = parseFloat(card.dataset.lat);
+                const lng = parseFloat(card.dataset.lng);
+
+                if (isNaN(lat) || isNaN(lng)) return;
+
+                const distance = getDistance(userLat, userLng, lat, lng);
+                const el = card.querySelector(".distance");
+
+                if (el) {
+                    el.innerText = ` ${distance.toFixed(1)} km away`;
+                }
+            });
+        },
+        (err) => {
+            console.error("Geolocation error:", err.message);
+
+            // Fallback UI
+            document.querySelectorAll(".distance").forEach(el => {
+                el.innerText = " Location unavailable";
+            });
+        }
+    );
+});
+
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) ** 2;
+
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}

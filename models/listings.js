@@ -1,30 +1,6 @@
-//  const mongoose = require("mongoose");
-// const Schema = mongoose.Schema;
-
-// const listingSchema = new Schema({
-//     title:{
-//       type: String,
-//       required:true
-//     },
-//     description:String,
-//     image:{
-//       type:String,
-//       default:"https://unsplash.com/photos/a-painting-of-a-mans-face-on-a-canvas-3Hsqx6BaQjQ",
-//       set: (v) => v === "" 
-//       ? "https://unsplash.com/photos/a-painting-of-a-mans-face-on-a-canvas-3Hsqx6BaQjQ"
-//       :v,
-//     },
-//     price:Number,
-//     location:String,
-// });
-
-// const Listing = mongoose.model("Listing",listingSchema);
-// module.exports = Listing;
-
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Review = require("./review.js"); 
+const Review = require("./review.js"); // ✅ Added Review model import
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f";
 
@@ -77,13 +53,13 @@ const listingSchema = new Schema(
       type: String,
       trim: true
     },
-    
+
     // 📧 NEW: Temporary Email field (Until we add Authentication)
     // This connects the Buyer to the Seller
     email: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true
     },
 
     category: {
@@ -99,6 +75,43 @@ const listingSchema = new Schema(
         "Other"
       ],
       default: "Other"
+    },
+
+    // ✅ geometry must be its own field
+    geometry: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point"
+      },
+      coordinates: {
+        type: [Number],   // [lng, lat]
+      }
+    },
+
+
+
+    image: {
+      type: String,
+      default: DEFAULT_IMAGE,
+      set: (v) => (v && v.trim() !== "" ? v : DEFAULT_IMAGE)
+    },
+
+    // 🔍 Helps debugging + UI badge later
+    imageSource: {
+      type: String,
+      enum: ["google", "openlibrary", "fallback"],
+      default: "fallback"
+    },
+
+    price: {
+      type: Number,
+      min: 0
+    },
+
+    location: {
+      type: String,
+      trim: true
     },
 
     // Relation to Reviews
