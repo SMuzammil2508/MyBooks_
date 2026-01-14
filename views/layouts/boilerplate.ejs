@@ -4,40 +4,81 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <title>MyBooks</title>
 
     <link rel="stylesheet" href="/css/style.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
 </head>
 
 <body>
 
     <%- include("../includes/navbar.ejs") %>
 
-    <main>
-        <% if(success && success.length) { %>
-            <div style="background: #d4edda; color: #155724; padding: 10px; margin: 10px; border-radius: 5px; text-align: center;">
-                <%= success %>
+        <main>
+            <% if(success && success.length) { %>
+                <div
+                    style="background: #d4edda; color: #155724; padding: 10px; margin: 10px; border-radius: 5px; text-align: center;">
+                    <%= success %>
+                </div>
+                <% } %>
+
+                    <% if(error && error.length) { %>
+                        <div
+                            style="background: #f8d7da; color: #721c24; padding: 10px; margin: 10px; border-radius: 5px; text-align: center;">
+                            <%= error %>
+                        </div>
+                        <% } %>
+
+                            <%- body %>
+        </main>
+
+        <footer class="site-footer" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+            <p>Made with ❤️ for Hackathon 2026</p>
+        </footer>
+
+        <script src="/js/script.js"></script>
+        <!-- Floating AI Button -->
+        <div id="ai-fab" onclick="toggleAI()">🤖</div>
+
+        <!-- AI Chat Popup -->
+        <div id="ai-popup">
+            <div id="ai-header">
+                Ask MyBooks AI
+                <span onclick="toggleAI()" style="cursor:pointer;">✖</span>
             </div>
-        <% } %>
-        
-        <% if(error && error.length) { %>
-            <div style="background: #f8d7da; color: #721c24; padding: 10px; margin: 10px; border-radius: 5px; text-align: center;">
-                <%= error %>
+
+            <div id="ai-messages"></div>
+
+            <div id="ai-input">
+                <input id="aiQuery" placeholder="Ask about books..." />
+                <button onclick="askAI()">Send</button>
             </div>
-        <% } %>
+        </div>
 
-        <%- body %>
-    </main>
+        <link rel="stylesheet" href="/css/ai.css">
+        <script src="/js/ai.js"></script>
+        <script>
+            async function toggleWishlist(bookId, btn) {
+                try {
+                    const res = await fetch(`/wishlist/${bookId}/toggle`, { method: "POST" });
+                    const data = await res.json();
 
-    <footer class="site-footer" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-        <p>Made with ❤️ for Hackathon 2026</p>
-    </footer>
+                    if (data.wished) {
+                        btn.innerText = "❤️";
+                    } else {
+                        btn.innerText = "🤍";
+                    }
+                } catch (err) {
+                    alert("Login required to use wishlist");
+                }
+            }
+        </script>
 
-    <script src="/js/script.js"></script>
+
 
 </body>
+
 </html>

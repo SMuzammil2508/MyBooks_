@@ -2,14 +2,14 @@
 
     <section class="hero">
         <div class="hero-container split-layout">
-            
+
             <div class="hero-content fade-in">
                 <h1>
                     Don’t Buy New.<br />
                     <span id="typing-text"></span>
                 </h1>
                 <p>
-                    The student-first marketplace to buy, sell, and swap books on campus. 
+                    The student-first marketplace to buy, sell, and swap books on campus.
                     Stop overpaying for textbooks you only use once.
                 </p>
 
@@ -37,12 +37,9 @@
             </div>
 
             <div class="hero-image reveal">
-    <img 
-        src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-        alt="Student Reading"
-        style="border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);"
-    >
-</div>
+                <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                    alt="Student Reading" style="border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+            </div>
 
         </div>
     </section>
@@ -59,7 +56,7 @@
                     <div class="book-card"><i class="fas fa-feather" style="color: #f59e0b;"></i> Fiction</div>
                     <div class="book-card"><i class="fas fa-brain" style="color: #8b5cf6;"></i> Psychology</div>
                     <div class="book-card"><i class="fas fa-globe" style="color: #0ea5e9;"></i> History</div>
-                    
+
                     <div class="book-card"><i class="fas fa-atom" style="color: #6366f1;"></i> Physics</div>
                     <div class="book-card"><i class="fas fa-flask" style="color: #ec4899;"></i> Chemistry</div>
                     <div class="book-card"><i class="fas fa-calculator" style="color: #3b82f6;"></i> Math</div>
@@ -99,7 +96,7 @@
         <div class="container">
             <h2>Loved by Students</h2>
             <div class="testimonial-grid">
-                
+
                 <div class="testimonial">
                     <div class="stars">⭐⭐⭐⭐⭐</div>
                     <p>"I usually spend ₹4000 on books every sem. Got everything here for ₹800."</p>
@@ -172,4 +169,15 @@
                 Start Selling Now
             </a>
         </div>
+    </section>
+
+    <section style="margin: 40px auto; max-width: 700px;">
+        <h2>🤖 Ask MyBooks AI</h2>
+
+        <div style="display:flex; gap:10px;">
+            <input id="aiQuery" class="form-control" placeholder="e.g. Best book for learning JavaScript">
+            <button onclick="askAI()" class="cta-button">Ask</button>
+        </div>
+
+        <pre id="aiResult" style="margin-top:15px; background:#f8fafc; padding:15px; border-radius:8px;"></pre>
     </section>

@@ -1,4 +1,4 @@
-const Listing = require("../models/listings.js"); 
+const Listing = require("../models/listings.js");
 
 // ✅ INDEX (Merged with Search)
 module.exports.index = async (req, res) => {
@@ -17,7 +17,7 @@ module.exports.index = async (req, res) => {
     } else {
         allListings = await Listing.find({});
     }
-    
+
     res.render("listings/index.ejs", { allListings, search: search || "" });
 };
 
@@ -30,13 +30,13 @@ module.exports.createListing = async (req, res) => {
     // 1. Get the text data
     let listing = req.body.listing;
     const newListing = new Listing(listing);
-    
+
     // 2. Link the Owner
-    newListing.owner = req.user._id; 
+    newListing.owner = req.user._id;
 
     // 3. 🗺️ CAPTURE COORDINATES (From hidden inputs)
     let { lat, lng } = req.body;
-    
+
     if (lat && lng) {
         newListing.geometry = {
             type: 'Point',
@@ -58,7 +58,7 @@ module.exports.showListing = async (req, res) => {
     const listing = await Listing.findById(id)
         .populate({ path: "reviews", populate: { path: "author" } })
         .populate("owner");
-    
+
     if (!listing) {
         req.flash("error", "Listing does not exist!");
         res.redirect("/listings");

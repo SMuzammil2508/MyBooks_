@@ -1,16 +1,20 @@
-<header class="site-header" style="background-color: #fff; padding: 15px 30px; border-bottom: 1px solid #eaeaea; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000;">
-    
+<header class="site-header"
+    style="background-color: #fff; padding: 15px 30px; border-bottom: 1px solid #eaeaea; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000;">
+
     <div class="logo-container">
         <h1>
-            <a href="/listings" style="text-decoration: none; color: #222; font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-book-open" style="color: var(--primary);"></i> 
+            <a href="/listings"
+                style="text-decoration: none; color: #222; font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-book-open" style="color: var(--primary);"></i>
                 MyBooks
-            </a> 
+            </a>
         </h1>
     </div>
 
     <nav style="display: flex; align-items: center; gap: 20px;">
-        
+        <a href="/wishlist">❤️ Wishlist</a>
+
+
         <a href="/listings" style="text-decoration: none; color: #555; font-weight: 500; transition: color 0.3s;">
             Explore
         </a>
@@ -19,18 +23,20 @@
             <a href="/login" style="text-decoration: none; color: #555; font-weight: 500;">
                 Log in
             </a>
-            <a href="/signup" class="cta-button" style="background-color: #222; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+            <a href="/signup" class="cta-button"
+                style="background-color: #222; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
                 Sign Up
             </a>
-        <% } else { %>
-            <a href="/listings/new" class="cta-button" style="background-color: var(--primary); color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;">
-                <i class="fas fa-plus"></i> Sell Book
-            </a>
-            
-            <a href="/logout" style="text-decoration: none; color: #d9534f; font-weight: 600; margin-left: 10px;">
-                Log Out
-            </a>
-        <% } %>
+            <% } else { %>
+                <a href="/listings/new" class="cta-button"
+                    style="background-color: var(--primary); color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;">
+                    <i class="fas fa-plus"></i> Sell Book
+                </a>
+
+                <a href="/logout" style="text-decoration: none; color: #d9534f; font-weight: 600; margin-left: 10px;">
+                    Log Out
+                </a>
+                <% } %>
 
     </nav>
 </header>

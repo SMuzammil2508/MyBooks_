@@ -1,0 +1,39 @@
+<% layout("layouts/boilerplate") %>
+    <div class="listings-container">
+        <% books.forEach(book=> { %>
+
+            <div class="listing-card wishlist-card">
+
+                <!-- Remove button -->
+                <button class="remove-wishlist-btn"
+                    onclick="event.preventDefault(); event.stopPropagation(); removeFromWishlist('<%= book._id %>', this)">
+                    ✕
+                </button>
+
+                <a href="/listings/<%= book._id %>" class="card-link">
+                    <div class="book-image">
+                        <img src="<%= book.image %>" alt="<%= book.title %>"
+                            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=800&q=80';" />
+                    </div>
+
+                    <h3>
+                        <%= book.title %>
+                    </h3>
+                </a>
+
+                <div class="card-bottom-row">
+                    <div class="price">
+                        <%= book.price ? '₹' + book.price.toLocaleString("en-IN") : 'Free' %>
+                    </div>
+
+                    <small style="color: var(--text-muted);">
+                        <%= book.location || 'India' %>
+                    </small>
+                </div>
+
+            </div>
+
+            <% }) %>
+    </div>
+
+    <script src="/js/wishlist.js"></script>

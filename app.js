@@ -80,6 +80,13 @@ app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 app.use("/ai", aiRoutes);
 
+
+const wishlistRoutes = require("./public/js/wishlist.js");
+app.use("/wishlist", wishlistRoutes);
+
+
+
+
 // ---------------------------------------------------------
 // 🚨 ERROR HANDLING
 // ---------------------------------------------------------

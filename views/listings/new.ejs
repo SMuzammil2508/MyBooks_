@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sell a Book | MyBooks</title>
-    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
     <header class="site-header">
@@ -15,11 +17,11 @@
     </header>
 
     <main class="add-book-container">
-        
+
         <form method="post" action="/listings" class="add-book-wrapper needs-validation" id="sellForm" novalidate>
-            
+
             <div class="image-upload-section">
-                
+
                 <div class="cover-preview" id="preview-box">
                     <div id="placeholder-content">
                         <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 10px; opacity: 0.3;"></i>
@@ -27,36 +29,27 @@
                     </div>
                     <img id="preview-img" src="" style="display: none;" />
                 </div>
-                
+
 
                 <div class="cover-btns">
                     <p style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">Image URL</p>
-                    <input 
-                        type="text" 
-                        name="listing[image]" 
-                        id="image-url-input" 
-                        class="form-control" 
-                        placeholder="https://..."
-                        oninput="updatePreview(this.value)"
-                    >
+                    <input type="text" name="listing[image]" id="image-url-input" class="form-control"
+                        placeholder="https://..." oninput="updatePreview(this.value)">
                 </div>
             </div>
 
             <div class="form-section">
-                
-                <div style="background: #f0fdf4; border: 1px dashed #16a34a; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+
+                <div
+                    style="background: #f0fdf4; border: 1px dashed #16a34a; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
                     <label style="color: #15803d; font-weight: 700; display: block; margin-bottom: 8px;">
                         ✨ Fast Fill via ISBN
                     </label>
                     <div style="display: flex; gap: 10px;">
-                        <input 
-                            type="text" 
-                            id="isbn-input" 
-                            class="form-control" 
-                            placeholder="Enter 13-digit ISBN (Back of book)" 
-                            style="margin-bottom: 0;"
-                        >
-                        <button type="button" onclick="fetchByISBN()" class="cta-button" id="isbn-btn" style="white-space: nowrap; background: #16a34a; border-color: #16a34a;">
+                        <input type="text" id="isbn-input" class="form-control"
+                            placeholder="Enter 13-digit ISBN (Back of book)" style="margin-bottom: 0;">
+                        <button type="button" onclick="fetchByISBN()" class="cta-button" id="isbn-btn"
+                            style="white-space: nowrap; background: #16a34a; border-color: #16a34a;">
                             <i class="fas fa-magic"></i> Fetch
                         </button>
                     </div>
@@ -65,12 +58,14 @@
                 <h2>Book Details</h2>
 
                 <div class="form-row">
-                    
+
                     <div class="form-group" style="flex: 2;">
                         <label>Book Title <span style="color: red;">*</span></label>
-                        <input name="listing[title]" id="title" placeholder="e.g. Concepts of Physics" type="text" class="form-control" required />
-                        
-                        <button type="button" onclick="fetchByTitle()" id="title-btn" style="margin-top: 8px; background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; font-size: 0.9rem; padding: 0; display: flex; align-items: center; gap: 5px;">
+                        <input name="listing[title]" id="title" placeholder="e.g. Concepts of Physics" type="text"
+                            class="form-control" required />
+
+                        <button type="button" onclick="fetchByTitle()" id="title-btn"
+                            style="margin-top: 8px; background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; font-size: 0.9rem; padding: 0; display: flex; align-items: center; gap: 5px;">
                             <i class="fas fa-search"></i> Auto-Fill using Title
                         </button>
 
@@ -79,7 +74,8 @@
 
                     <div class="form-group" style="flex: 1;">
                         <label>Author</label>
-                        <input name="listing[author]" id="author" placeholder="e.g. H.C. Verma" type="text" class="form-control" />
+                        <input name="listing[author]" id="author" placeholder="e.g. H.C. Verma" type="text"
+                            class="form-control" />
                     </div>
 
                 </div>
@@ -103,23 +99,19 @@
                     <div class="form-group">
                         <label>Meeting Location <span style="color: red;">*</span></label>
                         <div class="input-group" style="display: flex;">
-                             <input
-                                type="text"
-                                name="listing[location]"
-                                id="locationInput"
-                                class="form-control"
-                                value="<%= currUser.location %>"
-                                placeholder="Search for a location..."
-                                required
-                                style="border-radius: 8px 0 0 8px;"
-                            />
-                            <button type="button" onclick="resetLocation()" title="Reset to my default location" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-left: 0; padding: 0 15px; border-radius: 0 8px 8px 0; cursor: pointer;">
+                            <input type="text" name="listing[location]" id="locationInput" class="form-control"
+                                value="<%= currUser.location %>" placeholder="Search for a location..." required
+                                style="border-radius: 8px 0 0 8px;" />
+                            <button type="button" onclick="resetLocation()" title="Reset to my default location"
+                                style="background: #e2e8f0; border: 1px solid #cbd5e1; border-left: 0; padding: 0 15px; border-radius: 0 8px 8px 0; cursor: pointer;">
                                 <i class="fas fa-map-marker-alt" style="color: #64748b;"></i>
                             </button>
                         </div>
-                        
-                        <input type="hidden" name="lat" id="lat" value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[1] : 0 %>">
-                        <input type="hidden" name="lng" id="lng" value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[0] : 0 %>">
+
+                        <input type="hidden" name="lat" id="lat"
+                            value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[1] : 0 %>">
+                        <input type="hidden" name="lng" id="lng"
+                            value="<%= (currUser.geometry && currUser.geometry.coordinates) ? currUser.geometry.coordinates[0] : 0 %>">
 
                         <div class="invalid-feedback">Please enter your location.</div>
                     </div>
@@ -128,17 +120,12 @@
                 <div class="form-group">
                     <label>Contact Email <span style="color: red;">*</span></label>
                     <div class="input-group" style="display: flex;">
-                        <span style="display: flex; align-items: center; padding: 0 15px; background: #f1f5f9; border: 1px solid #cbd5e1; border-right: 0; border-radius: 8px 0 0 8px;">
+                        <span
+                            style="display: flex; align-items: center; padding: 0 15px; background: #f1f5f9; border: 1px solid #cbd5e1; border-right: 0; border-radius: 8px 0 0 8px;">
                             <i class="fas fa-envelope" style="color: #64748b;"></i>
                         </span>
-                        <input 
-                            name="listing[email]" 
-                            type="email" 
-                            class="form-control" 
-                            placeholder="For buyers to contact you" 
-                            required 
-                            style="border-radius: 0 8px 8px 0;"
-                        />
+                        <input name="listing[email]" type="email" class="form-control"
+                            placeholder="For buyers to contact you" required style="border-radius: 0 8px 8px 0;" />
                     </div>
                     <div class="invalid-feedback">Please provide a valid email address.</div>
                 </div>
@@ -146,26 +133,24 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Original MRP (₹) <span style="color: red;">*</span></label>
-                        <input name="listing[mrp]" id="mrp" placeholder="500" type="number" class="form-control" required oninput="validatePrice()" />
+                        <input name="listing[mrp]" id="mrp" placeholder="500" type="number" class="form-control"
+                            required oninput="validatePrice()" />
                         <div class="invalid-feedback">Please enter the MRP.</div>
                     </div>
                     <div class="form-group">
                         <label>Selling Price (₹) <span style="color: red;">*</span></label>
-                        <input name="listing[price]" id="price" placeholder="250" type="number" class="form-control" required oninput="validatePrice()" />
-                        <small id="price-warning" style="color: #ef4444; display: none;">Selling price cannot be higher than MRP!</small>
+                        <input name="listing[price]" id="price" placeholder="250" type="number" class="form-control"
+                            required oninput="validatePrice()" />
+                        <small id="price-warning" style="color: #ef4444; display: none;">Selling price cannot be higher
+                            than MRP!</small>
                         <div class="invalid-feedback">Please enter a selling price.</div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea 
-                        name="listing[description]" 
-                        id="description" 
-                        rows="5" 
-                        class="form-control" 
-                        placeholder="Describe the book condition (e.g., 'Like new', 'Some highlighter marks')..."
-                    ></textarea>
+                    <textarea name="listing[description]" id="description" rows="5" class="form-control"
+                        placeholder="Describe the book condition (e.g., 'Like new', 'Some highlighter marks')..."></textarea>
                 </div>
 
                 <button class="cta-button" id="submit-btn" style="width: 100%; margin-top: 10px;">Post Listing</button>
@@ -175,10 +160,10 @@
     </main>
 
     <script>
-      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-        key: "API", // 👈 DON'T FORGET TO PASTE YOUR KEY!
-        v: "weekly",
-      });
+        (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+            key: "APIKEY", // 👈 DON'T FORGET TO PASTE YOUR KEY!
+            v: "weekly",
+        });
     </script>
 
     <script>
@@ -188,7 +173,7 @@
         async function initAutocomplete() {
             const { Autocomplete } = await google.maps.importLibrary("places");
             const input = document.getElementById("locationInput");
-            
+
             autocomplete = new Autocomplete(input, {
                 fields: ["geometry", "name"],
                 types: ["geocode"]
@@ -233,7 +218,7 @@
         function updatePreview(url) {
             const previewImg = document.getElementById('preview-img');
             const placeholder = document.getElementById('placeholder-content');
-            
+
             if (url) {
                 previewImg.src = url;
                 previewImg.style.display = 'block';
@@ -258,7 +243,7 @@
                 btn.style.opacity = '0.5';
             } else {
                 warning.style.display = 'none';
-                priceInput.setCustomValidity(""); 
+                priceInput.setCustomValidity("");
                 btn.disabled = false;
                 btn.style.opacity = '1';
             }
@@ -292,20 +277,20 @@
             const title = document.getElementById('title').value;
             const author = document.getElementById('author').value;
             const btn = document.getElementById('title-btn');
-            
-            if (!title) { 
-                alert("Please enter a Title first!"); 
+
+            if (!title) {
+                alert("Please enter a Title first!");
                 document.getElementById('title').focus();
-                return; 
+                return;
             }
-            
+
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
             btn.disabled = true;
 
             try {
                 let query = `intitle:${title}`;
-                if(author) query += `+inauthor:${author}`;
+                if (author) query += `+inauthor:${author}`;
 
                 const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`);
                 const data = await res.json();
@@ -340,7 +325,7 @@
                 if (info.categories) {
                     const cat = info.categories[0].toLowerCase();
                     const catSelect = document.getElementById('category');
-                    
+
                     if (cat.includes('fiction') && !cat.includes('non')) catSelect.value = "Fiction";
                     else if (cat.includes('technology') || cat.includes('engineering') || cat.includes('computer')) catSelect.value = "Engineering";
                     else if (cat.includes('medical') || cat.includes('biology')) catSelect.value = "NEET";
@@ -351,7 +336,12 @@
                 alert("Book not found. Please try a different title or ISBN.");
             }
         }
+        document.getElementById("sellForm").addEventListener("submit", e => {
+            console.log("Form valid?", e.target.checkValidity());
+        });
+
     </script>
 
 </body>
+
 </html>
